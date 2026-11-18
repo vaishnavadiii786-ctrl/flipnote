@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://YOUR_GITHUB_USERNAME.github.io/flipnote/sitemap.xml
+Sitemap: https://vaishnavadiii786-ctrl.github.io/flipnote/sitemap.xml
