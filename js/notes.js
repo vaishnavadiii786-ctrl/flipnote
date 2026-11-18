@@ -18,24 +18,31 @@ function loadScript(src) {
 }
 
 export async function extractPdfText(file) {
-  if (!pdfJsLoaded) {
-    pdfJsLoaded = (async () => {
-      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.mjs').catch(async () => {
-        // Fallback to classic UMD build for broad browser compatibility
-        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+  if (!window.pdfjsLib) {
+    if (!pdfJsLoaded) {
+      pdfJsLoaded = (async () => {
+        try {
+          await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+        } catch {
+          await loadScript('https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js');
+        }
+        if (!window.pdfjsLib) {
+          throw new Error('PDF engine did not initialize');
+        }
+      })().catch((err) => {
+        pdfJsLoaded = null;
+        throw err;
       });
-    })();
+    }
+    await pdfJsLoaded;
   }
-  await pdfJsLoaded;
 
   const pdfjsLib = window.pdfjsLib;
   if (!pdfjsLib) {
     throw new Error('PDF engine unavailable');
   }
-  if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-  }
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
   const buffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
@@ -46,12 +53,19 @@ export async function extractPdfText(file) {
     const strings = content.items.map((item) => item.str);
     pages.push(strings.join(' ').replace(/\s+/g, ' ').trim());
   }
-  return pages.filter(Boolean).join('\n\n');
+  const text = pages.filter(Boolean).join('\n\n');
+  if (!text) {
+    throw new Error('No selectable text found in PDF (it may be a scanned image PDF — try Scan Image OCR).');
+  }
+  return text;
 }
 
 export async function extractImageTextOCR(file, langCode = 'eng') {
   if (!tesseractLoaded) {
-    tesseractLoaded = loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
+    tesseractLoaded = loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js').catch((err) => {
+      tesseractLoaded = null;
+      throw err;
+    });
   }
   await tesseractLoaded;
   if (!window.Tesseract) {
@@ -103,21 +117,6 @@ export async function removeNote(id) {
   return deleteItem('notes', id);
 }
 
-export const SAMPLE_NOTE = {
-  title: 'Cell Biology — Mitosis & Energy',
-  subject: 'Biology',
-  content: `Mitosis: Cell division that results in two genetically identical daughter cells from a single parent cell.
-Interphase: The longest phase of the cell cycle where DNA replication occurs before division.
-Prophase: Chromatin condenses into visible chromosomes and the nuclear envelope begins to break down.
-Metaphase: Chromosomes align along the metaphase plate at the equator of the cell.
-Anaphase: Sister chromatids separate and move toward opposite poles of the cell.
-Telophase: Nuclear membranes reform around each set of chromosomes and chromosomes decondense.
-Mitochondria: Membrane-bound organelles known as the powerhouse of the cell because they generate ATP.
-ATP (Adenosine Triphosphate): The primary energy-carrying molecule used by living cells for metabolic work.
-Photosynthesis: The process by which green plants convert light energy into chemical energy stored in glucose.
-Chloroplast: The organelle in plant cells where photosynthesis takes place using chlorophyll.`
-};
-
 export function generateDeterministicSummary(text, maxPoints = 5) {
   const clean = (text || '').trim();
   if (!clean) return [];
@@ -140,3 +139,18 @@ export function generateDeterministicSummary(text, maxPoints = 5) {
     .sort((a, b) => a.idx - b.idx)
     .map((x) => x.line);
 }
+
+export const SAMPLE_NOTE = {
+  title: 'Cell Biology — Mitosis & Energy',
+  subject: 'Biology',
+  content: `Mitosis: Cell division that results in two genetically identical daughter cells from a single parent cell.
+Interphase: The longest phase of the cell cycle where DNA replication occurs before division.
+Prophase: Chromatin condenses into visible chromosomes and the nuclear envelope begins to break down.
+Metaphase: Chromosomes align along the metaphase plate at the equator of the cell.
+Anaphase: Sister chromatids separate and move toward opposite poles of the cell.
+Telophase: Nuclear membranes reform around each set of chromosomes and chromosomes decondense.
+Mitochondria: Membrane-bound organelles known as the powerhouse of the cell because they generate ATP.
+ATP (Adenosine Triphosphate): The primary energy-carrying molecule used by living cells for metabolic work.
+Photosynthesis: The process by which green plants convert light energy into chemical energy stored in glucose.
+Chloroplast: The organelle in plant cells where photosynthesis takes place using chlorophyll.`
+};
