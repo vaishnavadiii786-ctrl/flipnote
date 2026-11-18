@@ -1,0 +1,54 @@
+{
+  "name": "FLIPNOTE — Your Notes. Your Memory.",
+  "short_name": "FLIPNOTE",
+  "description": "Free-first, offline-ready learning platform that converts your notes into flashcards, MCQ quizzes, and spaced-revision sessions.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#070B1E",
+  "theme_color": "#101738",
+  "categories": ["education", "productivity", "utilities"],
+  "lang": "en",
+  "dir": "auto",
+  "icons": [
+    {
+      "src": "./assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Note",
+      "short_name": "New Note",
+      "description": "Paste notes or import a PDF to generate flashcards",
+      "url": "./index.html#notes"
+    },
+    {
+      "name": "Revision Queue",
+      "short_name": "Revise",
+      "description": "Review due flashcards with spaced repetition",
+      "url": "./index.html#revision"
+    },
+    {
+      "name": "Study Library",
+      "short_name": "Library",
+      "description": "Open saved notes, flashcards, and quizzes",
+      "url": "./index.html#library"
+    }
+  ]
+}

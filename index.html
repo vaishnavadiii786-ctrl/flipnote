@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>FLIPNOTE — Your Notes. Your Memory. | Free Flashcards, Quizzes &amp; Spaced Revision</title>
+  <meta name="description" content="FLIPNOTE is a free-first, offline-ready learning platform that converts your notes and PDFs into flashcards, MCQ quizzes, and spaced-revision sessions in 15 languages." />
+  <meta name="theme-color" content="#101738" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="FLIPNOTE" />
+
+  <!-- Canonical & Open Graph -->
+  <link rel="canonical" href="https://YOUR_GITHUB_USERNAME.github.io/flipnote/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="FLIPNOTE — Your Notes. Your Memory." />
+  <meta property="og:description" content="Convert notes and PDFs into flashcards, MCQ quizzes, and spaced revision — free, private, and offline-ready." />
+  <meta property="og:url" content="https://YOUR_GITHUB_USERNAME.github.io/flipnote/" />
+  <meta property="og:image" content="./assets/icons/icon-512.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="FLIPNOTE — Your Notes. Your Memory." />
+  <meta name="twitter:description" content="Free-first study platform for flashcards, quizzes, and spaced revision." />
+
+  <!-- PWA & Icons -->
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.svg" />
+  <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png" />
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "FLIPNOTE",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web, Android, iOS",
+    "description": "Free-first learning platform that converts notes into flashcards, MCQ quizzes, and spaced revision.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div id="offline-banner" class="offline-banner" hidden>
+    <span data-i18n="common.offlineMode">You are offline. Saved study material remains available.</span>
+  </div>
+
+  <div class="app-shell">
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand-lockup">
+        <img src="./assets/icons/icon-192.png" alt="FLIPNOTE logo" class="brand-logo" width="34" height="34" />
+        <div>
+          <p class="brand-title">FLIPNOTE</p>
+          <p class="brand-tagline" data-i18n="app.tagline">Your Notes. Your Memory.</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" id="sidebar-nav">
+        <button class="nav-item active" data-view="notes" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span data-i18n="nav.notes">Notes</span>
+        </button>
+        <button class="nav-item" data-view="flashcards" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/></svg>
+          <span data-i18n="nav.flashcards">Flashcards</span>
+        </button>
+        <button class="nav-item" data-view="quiz" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span data-i18n="nav.quiz">Quiz</span>
+        </button>
+        <button class="nav-item" data-view="revision" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          <span data-i18n="nav.revision">Revision</span>
+        </button>
+        <button class="nav-item" data-view="library" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span data-i18n="nav.library">Library</span>
+        </button>
+        <button class="nav-item" data-view="progress" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span data-i18n="nav.progress">Progress</span>
+        </button>
+        <button class="nav-item" data-view="settings" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.77 1.02 1.51 1H21a2 2 0 0 1 0 4h-.09c-.74 0-1.25.42-1.51 1z"/></svg>
+          <span data-i18n="nav.settings">Settings</span>
+        </button>
+      </nav>
+
+      <div class="pill" style="justify-content:center;" data-i18n="common.offlineReady">Offline Ready</div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="mobile-header">
+        <div class="brand-lockup">
+          <img src="./assets/icons/icon-192.png" alt="FLIPNOTE logo" class="brand-logo" width="34" height="34" />
+          <div>
+            <h1 class="brand-title">FLIPNOTE</h1>
+            <p class="brand-tagline" data-i18n="app.tagline">Your Notes. Your Memory.</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="btn-install-pwa" class="btn btn-secondary btn-sm" type="button" hidden>Install</button>
+          <button id="btn-theme-toggle" class="btn btn-secondary btn-icon" type="button" aria-label="Toggle theme" title="Toggle theme">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+          <button id="btn-open-settings" class="btn btn-secondary btn-icon" type="button" data-i18n-aria="nav.settings" aria-label="Settings">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.77 1.02 1.51 1H21a2 2 0 0 1 0 4h-.09c-.74 0-1.25.42-1.51 1z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- VIEW 1: SMART NOTES -->
+      <section id="view-notes" class="view-section active" aria-labelledby="notes-heading">
+        <div class="view-header">
+          <h2 id="notes-heading" class="view-title" data-i18n="notes.title">Smart Notes</h2>
+          <p class="view-subtitle" data-i18n="notes.subtitle">Paste notes, import a PDF, or extract text from an image.</p>
+        </div>
+
+        <article class="glass-card">
+          <div class="grid-2">
+            <div class="field-group">
+              <label for="note-title" class="sr-only" data-i18n="notes.noteTitlePlaceholder">Note title</label>
+              <input id="note-title" class="input" type="text" data-i18n-placeholder="notes.noteTitlePlaceholder" placeholder="Note title (e.g., Cell Biology — Mitosis)" />
+            </div>
+            <div class="field-group">
+              <label for="note-subject" class="sr-only" data-i18n="notes.subjectPlaceholder">Subject</label>
+              <input id="note-subject" class="input" type="text" data-i18n-placeholder="notes.subjectPlaceholder" placeholder="Subject / Topic (optional)" />
+            </div>
+          </div>
+
+          <div class="btn-row" style="justify-content:space-between; margin-bottom:10px;">
+            <div class="segmented" role="tablist">
+              <button id="btn-note-edit-mode" class="segmented-btn active" type="button" data-i18n="notes.editMode">Edit</button>
+              <button id="btn-note-preview-mode" class="segmented-btn" type="button" data-i18n="notes.previewMode">Preview</button>
+            </div>
+            <div class="btn-row">
+              <button id="btn-load-sample" class="btn btn-ghost btn-sm" type="button" data-i18n="notes.pasteSample">Load Sample</button>
+              <label class="btn btn-secondary btn-sm" style="cursor:pointer;">
+                <span data-i18n="notes.importPdf">Import PDF</span>
+                <input id="input-pdf-file" type="file" accept="application/pdf,.pdf" hidden />
+              </label>
+              <label class="btn btn-secondary btn-sm" style="cursor:pointer;">
+                <span data-i18n="notes.importImage">Scan Image (OCR)</span>
+                <input id="input-ocr-file" type="file" accept="image/*" hidden />
+              </label>
+            </div>
+          </div>
+
+          <div id="note-status" class="pill" style="margin-bottom:10px;" hidden></div>
+
+          <textarea id="note-content" class="textarea" data-i18n-placeholder="notes.contentPlaceholder" placeholder="Paste or type your study notes here..."></textarea>
+          <div id="note-preview" class="note-preview" hidden></div>
+          <div id="note-summary-box" class="glass-card" style="margin-top:12px; padding:14px;" hidden></div>
+
+          <div class="btn-row" style="margin-top:14px;">
+            <button id="btn-save-note" class="btn btn-secondary" type="button" data-i18n="notes.saveNote">Save Note</button>
+            <button id="btn-gen-flashcards" class="btn btn-primary" type="button" data-i18n="notes.generateFlashcards">Generate Flashcards</button>
+            <button id="btn-gen-quiz" class="btn btn-primary" type="button" data-i18n="notes.generateQuiz">Generate Quiz</button>
+            <button id="btn-summarize-note" class="btn btn-secondary" type="button">Summarize</button>
+            <button id="btn-clear-note" class="btn btn-ghost btn-sm" type="button" data-i18n="common.clear">Clear</button>
+          </div>
+        </article>
+
+        <article class="glass-card">
+          <div class="btn-row" style="justify-content:space-between; margin-bottom:12px;">
+            <h3 style="margin:0; font-size:1.05rem;" data-i18n="notes.savedNotes">Saved Notes</h3>
+            <input id="notes-search" class="input" style="max-width:240px; padding:8px 12px;" type="search" data-i18n-placeholder="notes.searchNotes" placeholder="Search notes..." />
+          </div>
+          <div id="notes-list" class="item-list"></div>
+        </article>
+      </section>
+
+      <!-- VIEW 2: FLASHCARDS -->
+      <section id="view-flashcards" class="view-section" aria-labelledby="flashcards-heading">
+        <div class="view-header">
+          <h2 id="flashcards-heading" class="view-title" data-i18n="flashcards.title">Flashcard Studio</h2>
+          <p class="view-subtitle" data-i18n="flashcards.subtitle">Flip cards, edit Q&amp;A, shuffle, and save study sets.</p>
+        </div>
+
+        <article class="glass-card" id="flashcards-workspace">
+          <div class="btn-row" style="justify-content:space-between; margin-bottom:12px;">
+            <div class="btn-row">
+              <input id="set-title-input" class="input" style="max-width:260px; padding:8px 12px;" type="text" data-i18n-placeholder="flashcards.setTitlePrompt" placeholder="Study Set Title" />
+              <span id="flashcard-counter" class="pill">0 / 0</span>
+            </div>
+            <div class="btn-row">
+              <button id="btn-fc-shuffle" class="btn btn-secondary btn-sm" type="button" data-i18n="flashcards.shuffle">Shuffle</button>
+              <button id="btn-fc-add" class="btn btn-secondary btn-sm" type="button" data-i18n="flashcards.addCard">Add Card</button>
+              <button id="btn-fc-save" class="btn btn-primary btn-sm" type="button" data-i18n="flashcards.saveSet">Save Study Set</button>
+              <button id="btn-fc-share" class="btn btn-secondary btn-sm" type="button" data-i18n="flashcards.shareSet">Share Set</button>
+            </div>
+          </div>
+
+          <div id="flashcard-empty" class="empty-state">
+            <div class="empty-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/></svg>
+            </div>
+            <h3 class="empty-title" data-i18n="flashcards.emptyTitle">No flashcards ready</h3>
+            <p class="empty-desc" data-i18n="flashcards.emptyDesc">Generate flashcards from a note or open a saved study set from your Library.</p>
+            <button id="btn-fc-go-notes" class="btn btn-primary" type="button" data-i18n="flashcards.goToNotes">Go to Notes</button>
+          </div>
+
+          <div id="flashcard-active-area" hidden>
+            <div class="flashcard-stage">
+              <div id="flashcard-3d" class="flashcard-3d" tabindex="0" role="button" aria-label="Flip flashcard">
+                <div class="flashcard-face flashcard-face-front">
+                  <span class="flashcard-face-label" data-i18n="flashcards.front">Question / Front</span>
+                  <p id="flashcard-front-text" class="flashcard-text"></p>
+                  <span class="flashcard-hint" data-i18n="flashcards.tapToFlip">Tap card or press Space to flip</span>
+                </div>
+                <div class="flashcard-face flashcard-face-back">
+                  <span class="flashcard-face-label" data-i18n="flashcards.back">Answer / Back</span>
+                  <p id="flashcard-back-text" class="flashcard-text"></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-row" style="justify-content:space-between; margin-top:12px;">
+              <div class="btn-row">
+                <button id="btn-fc-prev" class="btn btn-secondary" type="button" data-i18n="common.previous">Previous</button>
+                <button id="btn-fc-next" class="btn btn-secondary" type="button" data-i18n="common.next">Next</button>
+              </div>
+              <div class="btn-row">
+                <button id="btn-fc-edit-card" class="btn btn-ghost btn-sm" type="button" data-i18n="common.edit">Edit</button>
+                <button id="btn-fc-delete-card" class="btn btn-danger btn-sm" type="button" data-i18n="common.delete">Delete</button>
+              </div>
+            </div>
+            <p class="item-sub" style="margin-top:12px;" data-i18n="flashcards.deterministicNotice">Generated locally using deterministic text analysis (no paid AI required).</p>
+          </div>
+        </article>
+      </section>
+
+      <!-- VIEW 3: QUIZ ENGINE -->
+      <section id="view-quiz" class="view-section" aria-labelledby="quiz-heading">
+        <div class="view-header">
+          <h2 id="quiz-heading" class="view-title" data-i18n="quiz.title">Quiz Engine</h2>
+          <p class="view-subtitle" data-i18n="quiz.subtitle">Test recall with auto-generated MCQs and source explanations.</p>
+        </div>
+
+        <article class="glass-card">
+          <div id="quiz-empty" class="empty-state">
+            <div class="empty-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <h3 class="empty-title" data-i18n="quiz.emptyTitle">No quiz loaded</h3>
+            <p class="empty-desc" data-i18n="quiz.emptyDesc">Create a quiz from your notes or open a shared quiz challenge.</p>
+            <button id="btn-quiz-go-notes" class="btn btn-primary" type="button" data-i18n="flashcards.goToNotes">Go to Notes</button>
+          </div>
+
+          <div id="quiz-active" hidden>
+            <div class="btn-row" style="justify-content:space-between; margin-bottom:12px;">
+              <div>
+                <h3 id="quiz-title-display" style="margin:0; font-size:1.05rem;"></h3>
+                <span id="quiz-progress-pill" class="pill" style="margin-top:4px;"></span>
+              </div>
+              <div class="btn-row">
+                <button id="btn-quiz-randomize" class="btn btn-secondary btn-sm" type="button" data-i18n="quiz.randomize">Randomize Order</button>
+                <button id="btn-quiz-save" class="btn btn-secondary btn-sm" type="button" data-i18n="quiz.saveQuiz">Save Quiz</button>
+                <button id="btn-quiz-share" class="btn btn-secondary btn-sm" type="button" data-i18n="quiz.shareChallenge">Share Challenge</button>
+              </div>
+            </div>
+
+            <p id="quiz-question-text" style="font-size:1.12rem; font-weight:600; margin:14px 0;"></p>
+            <div id="quiz-options-list" class="quiz-options"></div>
+
+            <div id="quiz-feedback" class="glass-card" style="padding:14px; margin-top:12px;" hidden>
+              <p id="quiz-feedback-status" style="font-weight:700; margin:0 0 6px;"></p>
+              <p id="quiz-feedback-explanation" class="item-sub" style="margin:0;"></p>
+            </div>
+
+            <div class="btn-row" style="justify-content:flex-end; margin-top:14px;">
+              <button id="btn-quiz-next" class="btn btn-primary" type="button" hidden data-i18n="quiz.nextQuestion">Next Question</button>
+            </div>
+          </div>
+
+          <div id="quiz-complete" class="empty-state" hidden>
+            <h3 class="empty-title" data-i18n="quiz.completedTitle">Quiz Complete!</h3>
+            <p id="quiz-final-score" class="stat-value" style="margin:10px 0;"></p>
+            <div class="btn-row" style="justify-content:center; margin-top:16px;">
+              <button id="btn-quiz-retry-wrong" class="btn btn-primary" type="button" hidden></button>
+              <button id="btn-quiz-retry-all" class="btn btn-secondary" type="button" data-i18n="quiz.retryAll">Retry Full Quiz</button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- VIEW 4: SPACED REVISION -->
+      <section id="view-revision" class="view-section" aria-labelledby="revision-heading">
+        <div class="view-header">
+          <h2 id="revision-heading" class="view-title" data-i18n="revision.title">Spaced Revision</h2>
+          <p class="view-subtitle" data-i18n="revision.subtitle">Rate recall difficulty to schedule your next review.</p>
+        </div>
+
+        <article class="glass-card">
+          <div class="btn-row" style="justify-content:space-between; margin-bottom:12px;">
+            <span id="rev-due-pill" class="pill">0</span>
+            <button id="btn-rev-practice-all" class="btn btn-secondary btn-sm" type="button" data-i18n="revision.practiceAll">Practice All Cards Anyway</button>
+          </div>
+
+          <div id="rev-empty" class="empty-state">
+            <h3 class="empty-title" data-i18n="revision.allCaughtUp">You're all caught up!</h3>
+            <p class="empty-desc" data-i18n="revision.allCaughtUpDesc">No flashcards are due right now. Study a set or review weak topics below.</p>
+          </div>
+
+          <div id="rev-active" hidden>
+            <p id="rev-set-label" class="item-sub" style="margin-bottom:6px;"></p>
+            <div class="flashcard-stage">
+              <div id="rev-card-3d" class="flashcard-3d" tabindex="0" role="button" aria-label="Flip revision card">
+                <div class="flashcard-face flashcard-face-front">
+                  <span class="flashcard-face-label" data-i18n="flashcards.front">Question / Front</span>
+                  <p id="rev-front-text" class="flashcard-text"></p>
+                  <span class="flashcard-hint" data-i18n="flashcards.tapToFlip">Tap card or press Space to flip</span>
+                </div>
+                <div class="flashcard-face flashcard-face-back">
+                  <span class="flashcard-face-label" data-i18n="flashcards.back">Answer / Back</span>
+                  <p id="rev-back-text" class="flashcard-text"></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-row" style="justify-content:center; margin-top:14px;">
+              <button class="btn btn-danger" data-rate="difficult" type="button">
+                <span data-i18n="revision.difficult">Difficult</span>
+                <small data-i18n="revision.difficultHint">10 min</small>
+              </button>
+              <button class="btn btn-secondary" data-rate="medium" type="button">
+                <span data-i18n="revision.medium">Medium</span>
+                <small data-i18n="revision.mediumHint">+1 day</small>
+              </button>
+              <button class="btn btn-success" data-rate="easy" type="button">
+                <span data-i18n="revision.easy">Easy</span>
+                <small data-i18n="revision.easyHint">+4 days</small>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="glass-card">
+          <h3 style="margin:0 0 10px; font-size:1.05rem;" data-i18n="revision.weakTopics">Weak Topics</h3>
+          <div id="weak-topics-list" class="item-list"></div>
+        </article>
+      </section>
+
+      <!-- VIEW 5: STUDY LIBRARY -->
+      <section id="view-library" class="view-section" aria-labelledby="library-heading">
+        <div class="view-header">
+          <h2 id="library-heading" class="view-title" data-i18n="library.title">Study Library</h2>
+          <p class="view-subtitle" data-i18n="library.subtitle">Your saved notes, flashcard sets, quizzes, and community sets.</p>
+        </div>
+
+        <article class="glass-card" id="library-recent-card" hidden>
+          <h3 style="margin:0 0 10px; font-size:1.05rem;" data-i18n="library.recentTitle">Recently Studied</h3>
+          <div id="library-recent-list" class="item-list"></div>
+        </article>
+
+        <article class="glass-card">
+          <div class="btn-row" style="justify-content:space-between; margin-bottom:12px;">
+            <div class="segmented" id="library-filters">
+              <button class="segmented-btn active" data-filter="all" type="button" data-i18n="library.filterAll">All</button>
+              <button class="segmented-btn" data-filter="notes" type="button" data-i18n="library.filterNotes">Notes</button>
+              <button class="segmented-btn" data-filter="sets" type="button" data-i18n="library.filterSets">Flashcards</button>
+              <button class="segmented-btn" data-filter="quizzes" type="button" data-i18n="library.filterQuizzes">Quizzes</button>
+            </div>
+            <div class="btn-row">
+              <input id="library-search" class="input" style="max-width:220px; padding:8px 12px;" type="search" data-i18n-placeholder="library.searchPlaceholder" placeholder="Search..." />
+              <button id="btn-open-import" class="btn btn-secondary btn-sm" type="button" data-i18n="library.importBtn">Import JSON / Link</button>
+            </div>
+          </div>
+          <div id="library-local-list" class="item-list"></div>
+        </article>
+
+        <article class="glass-card">
+          <div class="btn-row" style="justify-content:space-between; margin-bottom:10px;">
+            <h3 style="margin:0; font-size:1.05rem;" data-i18n="library.publicTitle">Public Study Discovery</h3>
+            <button id="btn-refresh-public" class="btn btn-secondary btn-sm" type="button" data-i18n="library.refreshPublic">Refresh</button>
+          </div>
+          <div id="library-public-list" class="item-list"></div>
+        </article>
+      </section>
+
+      <!-- VIEW 6: PROGRESS DASHBOARD -->
+      <section id="view-progress" class="view-section" aria-labelledby="progress-heading">
+        <div class="view-header">
+          <h2 id="progress-heading" class="view-title" data-i18n="progress.title">Learning Progress</h2>
+          <p class="view-subtitle" data-i18n="progress.subtitle">Your local study sessions, quiz accuracy, and daily activity.</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card glass-card">
+            <p id="stat-sessions" class="stat-value">0</p>
+            <p class="stat-label" data-i18n="progress.sessions">Study Sessions</p>
+          </div>
+          <div class="stat-card glass-card">
+            <p id="stat-quizzes" class="stat-value">0</p>
+            <p class="stat-label" data-i18n="progress.quizzesCompleted">Quizzes Completed</p>
+          </div>
+          <div class="stat-card glass-card">
+            <p id="stat-avg-score" class="stat-value">0%</p>
+            <p class="stat-label" data-i18n="progress.avgScore">Average Quiz Score</p>
+          </div>
+          <div class="stat-card glass-card">
+            <p id="stat-cards-reviewed" class="stat-value">0</p>
+            <p class="stat-label" data-i18n="progress.cardsReviewed">Cards Reviewed</p>
+          </div>
+        </div>
+
+        <article class="glass-card">
+          <h3 style="margin:0 0 8px; font-size:1.05rem;" data-i18n="progress.dailyActivity">Last 7 Days Activity</h3>
+          <div id="activity-chart" class="chart-bars"></div>
+        </article>
+
+        <article class="glass-card">
+          <h3 style="margin:0 0 10px; font-size:1.05rem;" data-i18n="progress.recentQuizzes">Recent Quiz Results</h3>
+          <div id="recent-quizzes-list" class="item-list"></div>
+        </article>
+      </section>
+
+      <!-- VIEW 7: SETTINGS -->
+      <section id="view-settings" class="view-section" aria-labelledby="settings-heading">
+        <div class="view-header">
+          <h2 id="settings-heading" class="view-title" data-i18n="settings.title">Settings</h2>
+          <p class="view-subtitle" data-i18n="settings.subtitle">Customize languages, appearance, optional AI, and local privacy.</p>
+        </div>
+
+        <article class="glass-card">
+          <h3 style="margin:0 0 12px; font-size:1.05rem;" data-i18n="settings.appearance">Appearance</h3>
+          <div class="grid-2">
+            <div class="field-group">
+              <label for="setting-theme" class="field-label" data-i18n="settings.theme">Theme</label>
+              <select id="setting-theme" class="select">
+                <option value="dark" data-i18n="settings.darkTheme">Dark Glass (Blue &amp; Purple)</option>
+                <option value="light" data-i18n="settings.lightTheme">Light Frosted Glass</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="setting-interface-lang" class="field-label" data-i18n="settings.interfaceLang">Interface Language</label>
+              <select id="setting-interface-lang" class="select"></select>
+            </div>
+          </div>
+        </article>
+
+        <article class="glass-card">
+          <h3 style="margin:0 0 12px; font-size:1.05rem;" data-i18n="settings.learningLangs">Learning Languages</h3>
+          <div class="grid-2">
+            <div class="field-group">
+              <label for="setting-notes-lang" class="field-label" data-i18n="settings.notesInputLang">Notes Input Language</label>
+              <select id="setting-notes-lang" class="select"></select>
+            </div>
+            <div class="field-group">
+              <label for="setting-fc-lang" class="field-label" data-i18n="settings.flashcardOutLang">Flashcard Output Language</label>
+              <select id="setting-fc-lang" class="select"></select>
+            </div>
+            <div class="field-group">
+              <label for="setting-quiz-lang" class="field-label" data-i18n="settings.quizOutLang">Quiz Language</label>
+              <select id="setting-quiz-lang" class="select"></select>
+            </div>
+            <div class="field-group">
+              <label for="setting-summary-lang" class="field-label" data-i18n="settings.summaryOutLang">Summary Language</label>
+              <select id="setting-summary-lang" class="select"></select>
+            </div>
+            <div class="field-group">
+              <label for="setting-translate-lang" class="field-label" data-i18n="settings.translationTargetLang">Translation Target Language</label>
+              <select id="setting-translate-lang" class="select"></select>
+            </div>
+          </div>
+        </article>
+
+        <article class="glass-card">
+          <h3 style="margin:0 0 6px; font-size:1.05rem;" data-i18n="settings.aiSection">Optional AI Provider (Disabled by Default)</h3>
+          <p class="item-sub" style="margin-bottom:12px;" data-i18n="settings.aiNotice">FLIPNOTE works 100% free without AI. Keys stay strictly in your browser.</p>
+          <label class="btn-row" style="margin-bottom:12px; cursor:pointer;">
+            <input id="setting-ai-enabled" type="checkbox" />
+            <span data-i18n="settings.aiEnable">Enable Optional AI Enhancement</span>
+          </label>
+          <div class="grid-2">
+            <div class="field-group">
+              <label for="setting-ai-provider" class="field-label" data-i18n="settings.aiProvider">Provider</label>
+              <select id="setting-ai-provider" class="select">
+                <option value="openai-compatible">OpenAI-Compatible</option>
+                <option value="gemini">Google Gemini API</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="setting-ai-model" class="field-label" data-i18n="settings.aiModel">Model Name</label>
+              <input id="setting-ai-model" class="input" type="text" placeholder="gpt-4o-mini / gemini-2.0-flash" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="setting-ai-key" class="field-label" data-i18n="settings.aiApiKey">API Key (stored locally only)</label>
+            <input id="setting-ai-key" class="input" type="password" autocomplete="off" placeholder="sk-..." />
+          </div>
+        </article>
+
+        <article class="glass-card">
+          <h3 style="margin:0 0 6px; font-size:1.05rem;" data-i18n="settings.supabaseSection">Optional Supabase Online Sharing</h3>
+          <p class="item-sub" style="margin-bottom:12px;" data-i18n="settings.supabaseNotice">Use only your public Supabase Project URL and public Anon Key.</p>
+          <div class="grid-2">
+            <div class="field-group">
+              <label for="setting-sb-url" class="field-label" data-i18n="settings.supabaseUrl">Supabase Project URL</label>
+              <input id="setting-sb-url" class="input" type="url" placeholder="https://xxxx.supabase.co" />
+            </div>
+            <div class="field-group">
+              <label for="setting-sb-key" class="field-label" data-i18n="settings.supabaseAnonKey">Supabase Public Anon Key</label>
+              <input id="setting-sb-key" class="input" type="text" autocomplete="off" placeholder="eyJ..." />
+            </div>
+          </div>
+          <button id="btn-save-settings" class="btn btn-primary" type="button" data-i18n="common.save">Save</button>
+        </article>
+
+        <article class="glass-card">
+          <h3 style="margin:0 0 12px; font-size:1.05rem;" data-i18n="settings.dataSection">Data &amp; Privacy</h3>
+          <div class="btn-row">
+            <button id="btn-export-all" class="btn btn-secondary" type="button" data-i18n="settings.exportAll">Export All Local Data (.json)</button>
+            <label class="btn btn-secondary" style="cursor:pointer;">
+              <span data-i18n="settings.importAll">Import Backup (.json)</span>
+              <input id="input-import-all" type="file" accept="application/json,.json" hidden />
+            </label>
+            <button id="btn-delete-all" class="btn btn-danger" type="button" data-i18n="settings.deleteAll">Delete All Local Data</button>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Tab Bar -->
+  <nav class="bottom-nav" id="bottom-nav" aria-label="Mobile navigation">
+    <button class="nav-item active" data-view="notes" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span data-i18n="nav.notes">Notes</span>
+    </button>
+    <button class="nav-item" data-view="flashcards" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/></svg>
+      <span data-i18n="nav.flashcards">Flashcards</span>
+    </button>
+    <button class="nav-item" data-view="quiz" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span data-i18n="nav.quiz">Quiz</span>
+    </button>
+    <button class="nav-item" data-view="revision" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      <span data-i18n="nav.revision">Revision</span>
+    </button>
+    <button class="nav-item" data-view="library" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span data-i18n="nav.library">Library</span>
+    </button>
+    <button class="nav-item" data-view="progress" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <span data-i18n="nav.progress">Progress</span>
+    </button>
+  </nav>
+
+  <!-- Onboarding Modal -->
+  <div id="onboarding-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="onboarding-title" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2 id="onboarding-title" class="modal-title" data-i18n="onboarding.welcome">Welcome to FLIPNOTE</h2>
+          <p class="item-sub" data-i18n="onboarding.tagline">Your Notes. Your Memory.</p>
+        </div>
+        <button id="btn-onboarding-skip" class="btn btn-ghost btn-sm" type="button" data-i18n="onboarding.skip">Skip</button>
+      </div>
+      <p style="margin-top:0; color:var(--text-secondary);" data-i18n="onboarding.description">Turn lecture notes, textbook PDFs, or quick ideas into interactive flashcards and MCQ quizzes — privately on your device.</p>
+
+      <div class="field-group">
+        <label for="onboarding-lang-select" class="field-label" data-i18n="onboarding.chooseLanguage">Choose your interface language</label>
+        <select id="onboarding-lang-select" class="select"></select>
+        <span id="onboarding-lang-hint" class="item-sub" data-i18n="onboarding.suggestedBrowser">Suggested from your browser</span>
+      </div>
+
+      <div class="item-list" style="margin:14px 0;">
+        <div class="item-row"><div><strong data-i18n="onboarding.step1Title">1. Capture Notes</strong><p class="item-sub" data-i18n="onboarding.step1Desc">Paste text, import PDFs, or scan images locally.</p></div></div>
+        <div class="item-row"><div><strong data-i18n="onboarding.step2Title">2. Study &amp; Quiz</strong><p class="item-sub" data-i18n="onboarding.step2Desc">Generate flashcards and MCQs without paid AI.</p></div></div>
+        <div class="item-row"><div><strong data-i18n="onboarding.step3Title">3. Remember Longer</strong><p class="item-sub" data-i18n="onboarding.step3Desc">Track weak topics with spaced revision.</p></div></div>
+      </div>
+
+      <button id="btn-onboarding-start" class="btn btn-primary" style="width:100%;" type="button" data-i18n="onboarding.getStarted">Get Started</button>
+    </div>
+  </div>
+
+  <!-- Share Modal -->
+  <div id="share-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="share-modal-title" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="share-modal-title" class="modal-title" data-i18n="sharing.title">Share Study Material</h2>
+        <button id="btn-share-close" class="btn btn-ghost btn-sm" type="button" data-i18n="common.close">Close</button>
+      </div>
+      <p class="item-sub" style="margin-bottom:12px;" data-i18n="sharing.privacyNotice">Private notes are never shared automatically.</p>
+      <div id="share-size-warning" class="pill pill-warning" style="margin-bottom:12px; white-space:normal;" hidden></div>
+      <div class="btn-row" style="margin-bottom:16px;">
+        <button id="btn-share-copy-link" class="btn btn-primary" type="button" data-i18n="sharing.generateLink">Copy Shareable Link</button>
+        <button id="btn-share-download-json" class="btn btn-secondary" type="button" data-i18n="sharing.downloadJson">Download .json File</button>
+      </div>
+      <hr style="border:none; border-top:1px solid var(--glass-border); margin:14px 0;" />
+      <h3 style="font-size:0.98rem; margin:0 0 8px;" data-i18n="sharing.onlineTab">Public Community (Supabase)</h3>
+      <div class="field-group">
+        <input id="share-author-alias" class="input" type="text" data-i18n-placeholder="sharing.authorAlias" placeholder="Your Alias (optional)" />
+      </div>
+      <button id="btn-share-publish" class="btn btn-secondary" type="button" data-i18n="sharing.publishPublic">Publish to Public Library</button>
+    </div>
+  </div>
+
+  <!-- Import Modal -->
+  <div id="import-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="import-modal-title" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="import-modal-title" class="modal-title" data-i18n="library.importTitle">Import Study Set or Quiz</h2>
+        <button id="btn-import-close" class="btn btn-ghost btn-sm" type="button" data-i18n="common.close">Close</button>
+      </div>
+      <div class="field-group">
+        <textarea id="import-text-input" class="textarea" style="min-height:120px;" data-i18n-placeholder="library.importPlaceholder" placeholder="Paste exported FLIPNOTE JSON or a #share= link here..."></textarea>
+      </div>
+      <div class="btn-row" style="justify-content:space-between;">
+        <label class="btn btn-secondary btn-sm" style="cursor:pointer;">
+          <span data-i18n="library.importFile">Or choose a .json file</span>
+          <input id="import-file-input" type="file" accept="application/json,.json" hidden />
+        </label>
+        <button id="btn-import-submit" class="btn btn-primary" type="button" data-i18n="common.import">Import</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Flashcard Modal -->
+  <div id="card-edit-modal" class="modal-backdrop" role="dialog" aria-modal="true" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title" data-i18n="common.edit">Edit</h2>
+        <button id="btn-card-edit-close" class="btn btn-ghost btn-sm" type="button" data-i18n="common.close">Close</button>
+      </div>
+      <div class="field-group">
+        <label for="edit-card-front" class="field-label" data-i18n="flashcards.front">Question / Front</label>
+        <textarea id="edit-card-front" class="textarea" style="min-height:85px;"></textarea>
+      </div>
+      <div class="field-group">
+        <label for="edit-card-back" class="field-label" data-i18n="flashcards.back">Answer / Back</label>
+        <textarea id="edit-card-back" class="textarea" style="min-height:100px;"></textarea>
+      </div>
+      <button id="btn-card-edit-save" class="btn btn-primary" type="button" data-i18n="common.save">Save</button>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div id="confirm-modal" class="modal-backdrop" role="alertdialog" aria-modal="true" hidden>
+    <div class="modal-card" style="max-width:400px;">
+      <p id="confirm-modal-message" style="margin:0 0 18px; font-weight:500;"></p>
+      <div class="btn-row" style="justify-content:flex-end;">
+        <button id="confirm-modal-cancel" class="btn btn-secondary btn-sm" type="button">Cancel</button>
+        <button id="confirm-modal-ok" class="btn btn-danger btn-sm" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
