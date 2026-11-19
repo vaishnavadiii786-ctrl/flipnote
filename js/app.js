@@ -31,8 +31,19 @@ import {
   speakText, stopSpeaking, calculateStudyStreak, calculateExamNetScore, formatTimerMMSS, downloadQuizResultCard
 } from './v2.js';
 import {
+  APPLE_THEMES, normalizeTheme, getThemeMetaColor, getThemeDisplayName, getNextTheme,
+  isVoiceDictationSupported, createVoiceDictation,
+  flashcardsToCsv, parseCsvOrTsvFlashcards, downloadTextFile, openPrintStudySheet
+} from './v3.js';
+import {
+  computeNoteMetrics, parseNoteToMindMapTree, renderMindMapSvg, createFocusAudioEngine
+} from './v4.js';
+import {
+  scoreFeynmanRecall, buildPanicCramDeck, REEL_GRADIENTS
+} from './v5.js';
+import {
   isSupabaseReady, publishStudySetToSupabase, publishQuizToSupabase,
-  fetchPublicStudySets, fetchSharedByShortCode
+  fetchPublicStudySets, fetchSharedByShortCode, registerAppUserToSupabase
 } from './supabase.js';
 
 const state = {
@@ -58,7 +69,9 @@ const state = {
   lastQuizSummary: null,
   pomoTimerId: null,
   pomoMode: 'focus',
-  pomoSecondsLeft: 25 * 60
+  pomoSecondsLeft: 25 * 60,
+  voiceDictation: null,
+  lastNoteSummary: ''
 };
 
 async function bootstrap() {
@@ -66,8 +79,9 @@ async function bootstrap() {
   state.settings = await getAllSettings();
 
   // Theme
-  const theme = state.settings.theme || 'dark';
+  const theme = normalizeTheme(state.settings.theme || 'dark');
   applyTheme(theme);
+  renderThemePicker();
 
   // Language & RTL
   await initI18n(state.settings.interfaceLang);
@@ -109,12 +123,54 @@ async function bootstrap() {
   }
 
   await refreshAllViews();
+  initWelcomeGate();
+  initV4Features();
+  initV5PowerModes();
 }
 
 function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme === 'light' ? 'light' : 'dark');
+  const safeTheme = normalizeTheme(theme);
+  document.documentElement.setAttribute('data-theme', safeTheme);
   const metaTheme = document.querySelector('meta[name="theme-color"]');
-  if (metaTheme) metaTheme.setAttribute('content', theme === 'light' ? '#eef1fb' : '#101738');
+  if (metaTheme) metaTheme.setAttribute('content', getThemeMetaColor(safeTheme));
+  const sel = document.getElementById('setting-theme');
+  if (sel) sel.value = safeTheme;
+  document.querySelectorAll('.theme-swatch-card').forEach((card) => {
+    const isActive = card.dataset.themeId === safeTheme;
+    card.classList.toggle('active', isActive);
+    card.setAttribute('aria-checked', String(isActive));
+  });
+}
+
+function renderThemePicker() {
+  const grid = document.getElementById('theme-picker-grid');
+  if (!grid) return;
+  const active = normalizeTheme(state.settings.theme || 'dark');
+  grid.innerHTML = APPLE_THEMES.map((th) => `
+    <button type="button" class="theme-swatch-card ${th.id === active ? 'active' : ''}" data-theme-id="${th.id}" role="radio" aria-checked="${th.id === active}">
+      <div class="theme-swatch-preview" style="background:${th.swatchBg};">
+        <div class="theme-swatch-dots">
+          <span style="background:#ff5f57;"></span>
+          <span style="background:#febc2e;"></span>
+          <span style="background:#28c840;"></span>
+        </div>
+        <div class="theme-swatch-bar" style="background:${th.swatchCard};">
+          <span class="theme-swatch-pill" style="background:${th.swatchAccent};"></span>
+        </div>
+      </div>
+      <span class="theme-swatch-name">${escapeHtml(th.name)}</span>
+    </button>
+  `).join('');
+
+  grid.querySelectorAll('.theme-swatch-card').forEach((card) => {
+    card.addEventListener('click', async () => {
+      const next = card.dataset.themeId;
+      applyTheme(next);
+      state.settings.theme = next;
+      await setSetting('theme', next);
+      showToast(`${getThemeDisplayName(next)} theme applied`);
+    });
+  });
 }
 
 function switchView(viewName) {
@@ -180,14 +236,14 @@ function bindEvents() {
   document.getElementById('btn-fc-go-notes')?.addEventListener('click', () => switchView('notes'));
   document.getElementById('btn-quiz-go-notes')?.addEventListener('click', () => switchView('notes'));
 
-  // Quick Theme Toggle
+  // Quick Theme Toggle (cycles Apple Theme Studio)
   document.getElementById('btn-theme-toggle')?.addEventListener('click', async () => {
-    const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const next = getNextTheme(current);
     applyTheme(next);
     state.settings.theme = next;
     await setSetting('theme', next);
-    const sel = document.getElementById('setting-theme');
-    if (sel) sel.value = next;
+    showToast(`${getThemeDisplayName(next)}`);
   });
 
   // Onboarding
@@ -230,6 +286,11 @@ function bindEvents() {
   document.getElementById('btn-gen-flashcards')?.addEventListener('click', handleGenerateFlashcardsFromNote);
   document.getElementById('btn-gen-quiz')?.addEventListener('click', handleGenerateQuizFromNote);
   document.getElementById('btn-summarize-note')?.addEventListener('click', handleSummarizeNote);
+  document.getElementById('btn-voice-note')?.addEventListener('click', handleToggleVoiceNote);
+  document.getElementById('btn-print-note')?.addEventListener('click', handlePrintNote);
+  document.getElementById('btn-fc-export-csv')?.addEventListener('click', handleExportFlashcardsCsv);
+  document.getElementById('input-fc-import-csv')?.addEventListener('change', handleImportFlashcardsCsv);
+  document.getElementById('btn-fc-print')?.addEventListener('click', handlePrintFlashcards);
   document.getElementById('notes-search')?.addEventListener('input', () => renderNotesList());
 
   document.getElementById('input-pdf-file')?.addEventListener('change', handlePdfUpload);
@@ -1349,4 +1410,689 @@ function togglePomodoroMode() {
   state.pomoMode = state.pomoMode === 'focus' ? 'break' : 'focus';
   state.pomoSecondsLeft = state.pomoMode === 'focus' ? 25 * 60 : 5 * 60;
   renderPomodoro();
+}
+
+
+// ==========================================================================
+// FLIPNOTE v3.0 Handlers: Voice-to-Notes, Anki/CSV Export-Import, Print/PDF
+// ==========================================================================
+
+function handleToggleVoiceNote() {
+  const btn = document.getElementById('btn-voice-note');
+  const statusEl = document.getElementById('note-status');
+  const textarea = document.getElementById('note-content');
+
+  if (!isVoiceDictationSupported()) {
+    showToast('Voice dictation works best in Chrome, Edge, or Safari.');
+    return;
+  }
+
+  if (state.voiceDictation && state.voiceDictation.isActive()) {
+    state.voiceDictation.stop();
+    return;
+  }
+
+  const lang = state.settings.notesInputLang || getCurrentLanguage();
+  state.voiceDictation = createVoiceDictation({
+    lang,
+    onStatusChange: (isRecording) => {
+      if (btn) {
+        btn.classList.toggle('btn-recording', isRecording);
+        btn.textContent = isRecording ? t('notes.voiceStop') : t('notes.voiceNote');
+      }
+      if (statusEl) {
+        if (isRecording) {
+          statusEl.hidden = false;
+          statusEl.textContent = t('notes.voiceListening');
+        } else {
+          statusEl.hidden = true;
+          statusEl.textContent = '';
+        }
+      }
+    },
+    onInterimText: (interim) => {
+      if (statusEl && interim) {
+        statusEl.hidden = false;
+        statusEl.textContent = `${t('notes.voiceListening')} ${interim}`;
+      }
+    },
+    onFinalText: (finalText) => {
+      if (!textarea || !finalText) return;
+      const prefix = textarea.value && !/\s$/.test(textarea.value) ? ' ' : '';
+      textarea.value = `${textarea.value}${prefix}${finalText}`;
+      textarea.dispatchEvent(new Event('input'));
+    },
+    onError: (err) => {
+      if (err === 'not-allowed') {
+        showToast('Microphone permission denied. Allow mic access to use Voice Note.');
+      } else if (err !== 'no-speech') {
+        showToast(`Voice dictation stopped (${err}).`);
+      }
+    }
+  });
+
+  try {
+    state.voiceDictation.start(lang);
+  } catch {
+    showToast('Could not start microphone dictation.');
+  }
+}
+
+function handlePrintNote() {
+  const title = document.getElementById('note-title')?.value.trim() || 'FLIPNOTE Study Notes';
+  const subject = document.getElementById('note-subject')?.value.trim() || '';
+  const content = document.getElementById('note-content')?.value.trim() || '';
+  if (!content) {
+    showToast(t('notes.emptyWarning'));
+    return;
+  }
+  const summaryBox = document.getElementById('note-summary-box');
+  const summary = summaryBox && !summaryBox.hidden ? summaryBox.textContent.trim() : '';
+  openPrintStudySheet({ mode: 'note', title, subject, content, summary });
+}
+
+function handleExportFlashcardsCsv() {
+  const cards = state.activeSet?.cards || [];
+  if (!cards.length) {
+    showToast(t('flashcards.emptyTitle'));
+    return;
+  }
+  const safeName = (state.activeSet.title || 'flipnote-flashcards')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/gi, '-')
+    .replace(/^-|-$/g, '') || 'flipnote-flashcards';
+  const csv = flashcardsToCsv(cards, { includeHeader: true });
+  downloadTextFile(`${safeName}-anki.csv`, csv, 'text/csv;charset=utf-8');
+  showToast(t('flashcards.csvExported'));
+}
+
+async function handleImportFlashcardsCsv(e) {
+  const file = e.target.files?.[0];
+  e.target.value = '';
+  if (!file) return;
+  try {
+    const text = await file.text();
+    const imported = parseCsvOrTsvFlashcards(text);
+    if (!imported.length) {
+      showToast(t('flashcards.csvImportEmpty'));
+      return;
+    }
+    const baseName = file.name.replace(/\.(csv|tsv|txt)$/i, '').replace(/[-_]+/g, ' ').trim();
+    if (!state.activeSet.cards.length) {
+      state.activeSet.title = state.activeSet.title || baseName || 'Imported Deck';
+      const titleInput = document.getElementById('set-title-input');
+      if (titleInput && !titleInput.value.trim()) titleInput.value = state.activeSet.title;
+    }
+    state.activeSet.cards.push(...imported);
+    state.fcIndex = Math.max(0, state.activeSet.cards.length - imported.length);
+    state.fcFlipped = false;
+    renderFlashcardStudio();
+    showToast(`${imported.length} ${t('flashcards.csvImported')}`);
+  } catch {
+    showToast(t('flashcards.csvImportEmpty'));
+  }
+}
+
+function handlePrintFlashcards() {
+  const cards = state.activeSet?.cards || [];
+  if (!cards.length) {
+    showToast(t('flashcards.emptyTitle'));
+    return;
+  }
+  const title = document.getElementById('set-title-input')?.value.trim() || state.activeSet.title || 'FLIPNOTE Flashcards';
+  openPrintStudySheet({ mode: 'flashcards', title, cards });
+}
+
+
+// ==========================================================================
+// FLIPNOTE v3.1 — Apple Welcome Sign-In Gate (Name + Email -> Supabase)
+// ==========================================================================
+
+const USER_PROFILE_STORAGE_KEY = 'flipnote_user_profile_v1';
+
+function getStoredUserProfile() {
+  try {
+    const raw = localStorage.getItem(USER_PROFILE_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed && parsed.fullName && parsed.email) return parsed;
+  } catch {}
+  return null;
+}
+
+function saveStoredUserProfile(profile) {
+  try {
+    localStorage.setItem(USER_PROFILE_STORAGE_KEY, JSON.stringify(profile));
+  } catch {}
+}
+
+function isValidEmailAddress(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
+}
+
+async function syncPendingUserProfile(profile) {
+  if (!profile || profile.synced) return;
+  try {
+    await registerAppUserToSupabase(state.settings, {
+      fullName: profile.fullName,
+      email: profile.email,
+      language: getCurrentLanguage()
+    });
+    profile.synced = true;
+    saveStoredUserProfile(profile);
+  } catch {
+    // Keep profile locally; will retry automatically when online
+  }
+}
+
+function updateAccountSummaryUI(profile) {
+  const el = document.getElementById('settings-account-summary');
+  if (!el) return;
+  if (profile) {
+    el.textContent = `${profile.fullName} (${profile.email})`;
+  } else {
+    el.textContent = t('auth.notSignedIn');
+  }
+}
+
+function initWelcomeGate() {
+  const modal = document.getElementById('welcome-gate-modal');
+  const form = document.getElementById('welcome-gate-form');
+  const nameInput = document.getElementById('auth-full-name');
+  const emailInput = document.getElementById('auth-email');
+  const errorEl = document.getElementById('welcome-gate-error');
+  const submitBtn = document.getElementById('btn-auth-continue');
+  const switchBtn = document.getElementById('btn-switch-account');
+
+  const existing = getStoredUserProfile();
+  updateAccountSummaryUI(existing);
+
+  if (!existing && modal) {
+    modal.hidden = false;
+    setTimeout(() => nameInput?.focus(), 60);
+  } else if (existing && !existing.synced) {
+    syncPendingUserProfile(existing);
+  }
+
+  window.addEventListener('online', () => {
+    const current = getStoredUserProfile();
+    if (current && !current.synced) syncPendingUserProfile(current);
+  });
+
+  switchBtn?.addEventListener('click', () => {
+    const current = getStoredUserProfile();
+    if (nameInput) nameInput.value = current?.fullName || '';
+    if (emailInput) emailInput.value = current?.email || '';
+    if (errorEl) errorEl.hidden = true;
+    if (modal) modal.hidden = false;
+  });
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fullName = (nameInput?.value || '').trim();
+    const email = (emailInput?.value || '').trim().toLowerCase();
+
+    if (fullName.length < 2) {
+      if (errorEl) {
+        errorEl.textContent = t('auth.invalidName');
+        errorEl.hidden = false;
+      }
+      nameInput?.focus();
+      return;
+    }
+    if (!isValidEmailAddress(email)) {
+      if (errorEl) {
+        errorEl.textContent = t('auth.invalidEmail');
+        errorEl.hidden = false;
+      }
+      emailInput?.focus();
+      return;
+    }
+
+    if (errorEl) errorEl.hidden = true;
+    if (submitBtn) submitBtn.disabled = true;
+
+    const profile = {
+      fullName,
+      email,
+      signedInAt: new Date().toISOString(),
+      synced: false
+    };
+    saveStoredUserProfile(profile);
+    updateAccountSummaryUI(profile);
+
+    await syncPendingUserProfile(profile);
+
+    if (submitBtn) submitBtn.disabled = false;
+    if (modal) modal.hidden = true;
+    showToast(`${t('auth.welcomeToast')} ${fullName}!`);
+  });
+}
+
+
+// ==========================================================================
+// FLIPNOTE v4.0 — Live Word Counter, Auto Mind Map & Offline Focus Sounds
+// ==========================================================================
+
+let focusAudioEngine = null;
+let lastMindMapSvg = '';
+
+function updateLiveWordBadge() {
+  const textarea = document.getElementById('note-content');
+  const badge = document.getElementById('note-word-badge');
+  if (!textarea || !badge) return;
+  badge.textContent = computeNoteMetrics(textarea.value).label;
+}
+
+function initV4Features() {
+  focusAudioEngine = createFocusAudioEngine();
+
+  // Live word count & reading time
+  const noteArea = document.getElementById('note-content');
+  noteArea?.addEventListener('input', updateLiveWordBadge);
+  document.getElementById('btn-load-sample')?.addEventListener('click', () => setTimeout(updateLiveWordBadge, 20));
+  document.getElementById('btn-clear-note')?.addEventListener('click', () => setTimeout(updateLiveWordBadge, 20));
+  updateLiveWordBadge();
+
+  // Streak pill jumps straight to Progress view
+  document.getElementById('header-streak-pill')?.addEventListener('click', () => switchView('progress'));
+
+  // Auto Mind Map modal
+  const mmModal = document.getElementById('mindmap-modal');
+  const mmStage = document.getElementById('mindmap-stage');
+  document.getElementById('btn-mind-map')?.addEventListener('click', () => {
+    const title = document.getElementById('note-title')?.value.trim() || 'Study Mind Map';
+    const content = document.getElementById('note-content')?.value.trim() || '';
+    if (!content) {
+      showToast(t('notes.emptyWarning'));
+      return;
+    }
+    const tree = parseNoteToMindMapTree(title, content);
+    lastMindMapSvg = renderMindMapSvg(tree);
+    if (mmStage) mmStage.innerHTML = lastMindMapSvg;
+    if (mmModal) mmModal.hidden = false;
+  });
+  document.getElementById('btn-mindmap-close')?.addEventListener('click', () => {
+    if (mmModal) mmModal.hidden = true;
+  });
+  document.getElementById('btn-mindmap-download')?.addEventListener('click', () => {
+    if (!lastMindMapSvg) return;
+    downloadTextFile('flipnote-mindmap.svg', lastMindMapSvg, 'image/svg+xml;charset=utf-8');
+    showToast('Mind Map SVG downloaded!');
+  });
+
+  // Offline Focus Sounds modal
+  const faModal = document.getElementById('focus-audio-modal');
+  const faTile = document.getElementById('btn-focus-sounds');
+  const volInput = document.getElementById('focus-volume');
+  const volLabel = document.getElementById('focus-volume-label');
+
+  const syncSoundButtons = () => {
+    const active = focusAudioEngine?.getMode();
+    faTile?.classList.toggle('active-sound', Boolean(active));
+    document.querySelectorAll('.focus-sound-btn').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.sound === active);
+    });
+  };
+
+  faTile?.addEventListener('click', () => {
+    if (faModal) faModal.hidden = false;
+    syncSoundButtons();
+  });
+  document.getElementById('btn-focus-close')?.addEventListener('click', () => {
+    if (faModal) faModal.hidden = true;
+  });
+  document.querySelectorAll('.focus-sound-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const mode = focusAudioEngine?.play(btn.dataset.sound);
+      syncSoundButtons();
+      showToast(mode ? `Focus audio playing (${mode})` : 'Focus audio paused');
+    });
+  });
+  document.getElementById('btn-focus-stop')?.addEventListener('click', () => {
+    focusAudioEngine?.stop();
+    syncSoundButtons();
+    showToast('Focus audio stopped');
+  });
+  volInput?.addEventListener('input', (e) => {
+    const val = Number(e.target.value);
+    if (volLabel) volLabel.textContent = `${val}%`;
+    focusAudioEngine?.setVolume(val / 100);
+  });
+}
+
+
+// ==========================================================================
+// FLIPNOTE v5.0 — Study Reels, Feynman Recall, Walk & Revise, Exam Panic
+// ==========================================================================
+
+async function collectAvailableFlashcards() {
+  if (state.activeSet?.cards?.length) return state.activeSet.cards;
+  const sets = await listStudySets();
+  const merged = [];
+  for (const s of sets) {
+    if (Array.isArray(s.cards)) merged.push(...s.cards);
+  }
+  if (merged.length) return merged;
+  const noteText = document.getElementById('note-content')?.value.trim();
+  if (noteText) {
+    return generateFlashcards(noteText, getCurrentLanguage());
+  }
+  return [];
+}
+
+function initV5PowerModes() {
+  // --- 1. Study Reels (Vertical Swipe Feed) ---
+  const reelsModal = document.getElementById('study-reels-modal');
+  const reelsFeed = document.getElementById('reels-feed');
+  const reelsCounter = document.getElementById('reels-counter');
+
+  document.getElementById('btn-study-reels')?.addEventListener('click', async () => {
+    const cards = await collectAvailableFlashcards();
+    if (!cards.length) {
+      showToast('Generate or load flashcards first to open Study Reels.');
+      return;
+    }
+    if (reelsCounter) reelsCounter.textContent = `1 / ${cards.length}`;
+    if (reelsFeed) {
+      reelsFeed.innerHTML = cards.map((c, idx) => `
+        <section class="reel-slide" style="background:${REEL_GRADIENTS[idx % REEL_GRADIENTS.length]};" data-idx="${idx}">
+          <div class="reel-card-glass" data-reel-card="${idx}">
+            <p class="reel-q">${escapeHtml(c.front)}</p>
+            <p class="reel-a" hidden>${escapeHtml(c.back)}</p>
+            <div class="reel-hint">Tap card to reveal answer • Swipe up for next</div>
+          </div>
+          <div class="reel-rail">
+            <button type="button" class="reel-action-btn" data-reel-like="${idx}" aria-label="Mastered">❤️</button>
+            <button type="button" class="reel-action-btn" data-reel-speak="${idx}" aria-label="Speak">🔊</button>
+          </div>
+        </section>
+      `).join('');
+
+      reelsFeed.querySelectorAll('[data-reel-card]').forEach((box) => {
+        box.addEventListener('click', () => {
+          const ans = box.querySelector('.reel-a');
+          const hint = box.querySelector('.reel-hint');
+          if (ans) ans.hidden = !ans.hidden;
+          if (hint) hint.textContent = ans?.hidden ? 'Tap card to reveal answer • Swipe up for next' : 'Swipe up for next card ↑';
+        });
+      });
+      reelsFeed.querySelectorAll('[data-reel-like]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          btn.classList.toggle('liked');
+          showToast(btn.classList.contains('liked') ? 'Marked as mastered!' : 'Unmarked');
+        });
+      });
+      reelsFeed.querySelectorAll('[data-reel-speak]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const c = cards[Number(btn.dataset.reelSpeak)];
+          if (c) speakText(`${c.front}. ${c.back}`, getCurrentLanguage());
+        });
+      });
+      reelsFeed.onscroll = () => {
+        const idx = Math.min(cards.length, Math.max(1, Math.round(reelsFeed.scrollTop / window.innerHeight) + 1));
+        if (reelsCounter) reelsCounter.textContent = `${idx} / ${cards.length}`;
+      };
+      reelsFeed.scrollTop = 0;
+    }
+    if (reelsModal) reelsModal.hidden = false;
+  });
+
+  document.getElementById('btn-reels-close')?.addEventListener('click', () => {
+    stopSpeaking();
+    if (reelsModal) reelsModal.hidden = true;
+  });
+
+  // --- 2. Teach It Back (Feynman Voice Recall) ---
+  const feynModal = document.getElementById('feynman-modal');
+  const feynQ = document.getElementById('feynman-question');
+  const feynInput = document.getElementById('feynman-input');
+  const feynResult = document.getElementById('feynman-result');
+  const feynMicBtn = document.getElementById('btn-feynman-mic');
+  let feynCards = [];
+  let feynIdx = 0;
+  let feynDictation = null;
+
+  const renderFeynmanCard = () => {
+    const c = feynCards[feynIdx];
+    if (!c) return;
+    if (feynQ) feynQ.textContent = c.front;
+    if (feynInput) feynInput.value = '';
+    if (feynResult) feynResult.hidden = true;
+  };
+
+  document.getElementById('btn-feynman-mode')?.addEventListener('click', async () => {
+    feynCards = await collectAvailableFlashcards();
+    if (!feynCards.length) {
+      showToast('Generate or load flashcards first to use Teach It Back.');
+      return;
+    }
+    feynIdx = 0;
+    renderFeynmanCard();
+    if (feynModal) feynModal.hidden = false;
+  });
+
+  document.getElementById('btn-feynman-next')?.addEventListener('click', () => {
+    if (!feynCards.length) return;
+    feynIdx = (feynIdx + 1) % feynCards.length;
+    renderFeynmanCard();
+  });
+
+  feynMicBtn?.addEventListener('click', () => {
+    if (!isVoiceDictationSupported()) {
+      showToast('Mic dictation works in Chrome, Edge, or Safari — you can type your answer below.');
+      return;
+    }
+    if (feynDictation && feynDictation.isActive()) {
+      feynDictation.stop();
+      return;
+    }
+    feynDictation = createVoiceDictation({
+      lang: state.settings.notesInputLang || getCurrentLanguage(),
+      onStatusChange: (rec) => {
+        feynMicBtn.classList.toggle('btn-recording', rec);
+        feynMicBtn.textContent = rec ? '⏹ Stop Speaking' : '🎙️ Speak Explanation';
+      },
+      onFinalText: (txt) => {
+        if (!feynInput || !txt) return;
+        feynInput.value = `${feynInput.value}${feynInput.value ? ' ' : ''}${txt}`;
+      }
+    });
+    feynDictation?.start();
+  });
+
+  document.getElementById('btn-feynman-check')?.addEventListener('click', () => {
+    const c = feynCards[feynIdx];
+    if (!c || !feynInput || !feynResult) return;
+    const res = scoreFeynmanRecall(feynInput.value, c.back);
+    const hitHtml = res.matched.map((w) => `<span class="kw-chip kw-hit">✓ ${escapeHtml(w)}</span>`).join('');
+    const missHtml = res.missed.map((w) => `<span class="kw-chip kw-miss">• ${escapeHtml(w)}</span>`).join('');
+    feynResult.innerHTML = `
+      <div style="font-size:1.15rem; font-weight:800; margin-bottom:6px;">Recall Score: ${res.score}%</div>
+      <p style="margin:0 0 10px; color:var(--text-secondary);">${escapeHtml(res.verdict)}</p>
+      ${hitHtml ? `<div style="margin-bottom:6px;">${hitHtml}</div>` : ''}
+      ${missHtml ? `<div><strong>Missed concepts:</strong><br>${missHtml}</div>` : ''}
+      <p style="margin:10px 0 0; font-size:0.86rem; color:var(--text-muted);"><strong>Reference:</strong> ${escapeHtml(c.back)}</p>
+    `;
+    feynResult.hidden = false;
+  });
+
+  document.getElementById('btn-feynman-close')?.addEventListener('click', () => {
+    if (feynDictation && feynDictation.isActive()) feynDictation.stop();
+    if (feynModal) feynModal.hidden = true;
+  });
+
+  // --- 3. Walk & Revise (Hands-Free Audio Podcast Loop) ---
+  const walkModal = document.getElementById('walk-revise-modal');
+  const walkPhase = document.getElementById('walk-phase-pill');
+  const walkText = document.getElementById('walk-card-text');
+  const walkProg = document.getElementById('walk-progress');
+  let walkCards = [];
+  let walkIdx = 0;
+  let walkRunning = false;
+  let walkTimer = null;
+
+  const stopWalkLoop = () => {
+    walkRunning = false;
+    if (walkTimer) clearTimeout(walkTimer);
+    walkTimer = null;
+    stopSpeaking();
+    if (walkPhase) walkPhase.textContent = 'Paused • Hands-Free Audio';
+  };
+
+  const runWalkStep = () => {
+    if (!walkRunning || !walkCards.length) return;
+    const c = walkCards[walkIdx];
+    const lang = getCurrentLanguage();
+    if (walkProg) walkProg.textContent = `Card ${walkIdx + 1} / ${walkCards.length}`;
+    if (walkPhase) walkPhase.textContent = '🎙️ Question...';
+    if (walkText) walkText.textContent = c.front;
+
+    speakText(c.front, lang);
+    walkTimer = setTimeout(() => {
+      if (!walkRunning) return;
+      if (walkPhase) walkPhase.textContent = '⏳ Think (4s)...';
+      walkTimer = setTimeout(() => {
+        if (!walkRunning) return;
+        if (walkPhase) walkPhase.textContent = '💡 Answer...';
+        if (walkText) walkText.textContent = c.back;
+        speakText(c.back, lang);
+        walkTimer = setTimeout(() => {
+          if (!walkRunning) return;
+          walkIdx = (walkIdx + 1) % walkCards.length;
+          runWalkStep();
+        }, 4200);
+      }, 4000);
+    }, 3200);
+  };
+
+  document.getElementById('btn-walk-revise')?.addEventListener('click', async () => {
+    walkCards = await collectAvailableFlashcards();
+    if (!walkCards.length) {
+      showToast('Generate or load flashcards first to use Walk & Revise.');
+      return;
+    }
+    walkIdx = 0;
+    if (walkProg) walkProg.textContent = `Card 1 / ${walkCards.length}`;
+    if (walkText) walkText.textContent = walkCards[0].front;
+    if (walkModal) walkModal.hidden = false;
+  });
+
+  document.getElementById('btn-walk-play')?.addEventListener('click', () => {
+    if (!walkCards.length) return;
+    stopWalkLoop();
+    walkRunning = true;
+    runWalkStep();
+  });
+
+  document.getElementById('btn-walk-skip')?.addEventListener('click', () => {
+    if (!walkCards.length) return;
+    const wasRunning = walkRunning;
+    stopWalkLoop();
+    walkIdx = (walkIdx + 1) % walkCards.length;
+    if (walkProg) walkProg.textContent = `Card ${walkIdx + 1} / ${walkCards.length}`;
+    if (walkText) walkText.textContent = walkCards[walkIdx].front;
+    if (wasRunning) {
+      walkRunning = true;
+      runWalkStep();
+    }
+  });
+
+  document.getElementById('btn-walk-stop')?.addEventListener('click', stopWalkLoop);
+  document.getElementById('btn-walk-close')?.addEventListener('click', () => {
+    stopWalkLoop();
+    if (walkModal) walkModal.hidden = true;
+  });
+
+  // --- 4. Exam Panic Mode (Last-Night 10-Min Crammer) ---
+  const panicModal = document.getElementById('exam-panic-modal');
+  const panicTimerEl = document.getElementById('panic-timer');
+  const panicCounterEl = document.getElementById('panic-counter');
+  const panicFrontEl = document.getElementById('panic-front');
+  const panicBackEl = document.getElementById('panic-back');
+  const btnPanicReveal = document.getElementById('btn-panic-reveal');
+  const btnPanicAgain = document.getElementById('btn-panic-again');
+  const btnPanicGotIt = document.getElementById('btn-panic-gotit');
+
+  let panicQueue = [];
+  let panicMastered = 0;
+  let panicSec = 600;
+  let panicInterval = null;
+
+  const stopPanicTimer = () => {
+    if (panicInterval) clearInterval(panicInterval);
+    panicInterval = null;
+  };
+
+  const renderPanicCard = () => {
+    if (!panicQueue.length) {
+      stopPanicTimer();
+      if (panicCounterEl) panicCounterEl.textContent = `Session Complete • ${panicMastered} cards crammed!`;
+      if (panicFrontEl) panicFrontEl.textContent = '🎉 You cleared your 10-Minute Panic Deck!';
+      if (panicBackEl) panicBackEl.hidden = true;
+      if (btnPanicReveal) btnPanicReveal.hidden = true;
+      if (btnPanicAgain) btnPanicAgain.hidden = true;
+      if (btnPanicGotIt) btnPanicGotIt.hidden = true;
+      return;
+    }
+    const c = panicQueue[0];
+    if (panicCounterEl) panicCounterEl.textContent = `Remaining: ${panicQueue.length} • Mastered: ${panicMastered}`;
+    if (panicFrontEl) panicFrontEl.textContent = c.front;
+    if (panicBackEl) {
+      panicBackEl.textContent = c.back;
+      panicBackEl.hidden = true;
+    }
+    if (btnPanicReveal) btnPanicReveal.hidden = false;
+    if (btnPanicAgain) btnPanicAgain.hidden = true;
+    if (btnPanicGotIt) btnPanicGotIt.hidden = true;
+  };
+
+  document.getElementById('btn-exam-panic')?.addEventListener('click', async () => {
+    const allCards = await collectAvailableFlashcards();
+    panicQueue = buildPanicCramDeck(allCards, 20);
+    if (!panicQueue.length) {
+      showToast('Add some notes or flashcards first to start Exam Panic Mode.');
+      return;
+    }
+    panicMastered = 0;
+    panicSec = 600;
+    if (panicTimerEl) panicTimerEl.textContent = formatTimerMMSS(panicSec);
+    stopPanicTimer();
+    panicInterval = setInterval(() => {
+      panicSec = Math.max(0, panicSec - 1);
+      if (panicTimerEl) panicTimerEl.textContent = formatTimerMMSS(panicSec);
+      if (panicSec === 0) {
+        stopPanicTimer();
+        showToast('10-Minute Panic Sprint finished!');
+      }
+    }, 1000);
+    renderPanicCard();
+    if (panicModal) panicModal.hidden = false;
+  });
+
+  btnPanicReveal?.addEventListener('click', () => {
+    if (panicBackEl) panicBackEl.hidden = false;
+    if (btnPanicReveal) btnPanicReveal.hidden = true;
+    if (btnPanicAgain) btnPanicAgain.hidden = false;
+    if (btnPanicGotIt) btnPanicGotIt.hidden = false;
+  });
+
+  btnPanicAgain?.addEventListener('click', () => {
+    const c = panicQueue.shift();
+    if (c) panicQueue.push(c);
+    renderPanicCard();
+  });
+
+  btnPanicGotIt?.addEventListener('click', () => {
+    panicQueue.shift();
+    panicMastered += 1;
+    renderPanicCard();
+  });
+
+  document.getElementById('btn-panic-close')?.addEventListener('click', () => {
+    stopPanicTimer();
+    if (panicModal) panicModal.hidden = true;
+  });
 }

@@ -3,13 +3,18 @@
 // NEVER uses or stores a service_role key.
 // If unconfigured or offline, local app features continue working 100%.
 
+export const DEFAULT_SUPABASE_URL = 'https://xffnacbkcmvhaugohxzx.supabase.co';
+export const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_49W8RpssYsWSwPNQq1ndFQ_gzGZv38D';
+
+export function resolveSupabaseConfig(settings = {}) {
+  const supabaseUrl = (settings?.supabaseUrl || DEFAULT_SUPABASE_URL).trim().replace(/\/+$/, '');
+  const supabaseAnonKey = (settings?.supabaseAnonKey || DEFAULT_SUPABASE_ANON_KEY).trim();
+  return { supabaseUrl, supabaseAnonKey };
+}
+
 function isConfigured(settings) {
-  return Boolean(
-    settings &&
-    settings.supabaseUrl &&
-    settings.supabaseAnonKey &&
-    settings.supabaseUrl.startsWith('https://')
-  );
+  const cfg = resolveSupabaseConfig(settings);
+  return Boolean(cfg.supabaseUrl && cfg.supabaseAnonKey && cfg.supabaseUrl.startsWith('https://'));
 }
 
 async function sha256Hex(text) {
@@ -20,12 +25,16 @@ async function sha256Hex(text) {
     .join('');
 }
 
-function baseHeaders(settings) {
-  return {
+export function baseHeaders(settings) {
+  const { supabaseAnonKey } = resolveSupabaseConfig(settings);
+  const headers = {
     'Content-Type': 'application/json',
-    'apikey': settings.supabaseAnonKey.trim(),
-    'Authorization': `Bearer ${settings.supabaseAnonKey.trim()}`
+    'apikey': supabaseAnonKey
   };
+  if (supabaseAnonKey.startsWith('eyJ')) {
+    headers['Authorization'] = `Bearer ${supabaseAnonKey}`;
+  }
+  return headers;
 }
 
 export function isSupabaseReady(settings) {
@@ -34,7 +43,7 @@ export function isSupabaseReady(settings) {
 
 export async function publishStudySetToSupabase(settings, set, authorAlias = 'Learner') {
   if (!isConfigured(settings)) throw new Error('Supabase not configured');
-  const url = settings.supabaseUrl.trim().replace(/\/+$/, '');
+  const url = resolveSupabaseConfig(settings).supabaseUrl;
   const rawToken = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
   const ownerTokenHash = await sha256Hex(rawToken);
 
@@ -65,7 +74,7 @@ export async function publishStudySetToSupabase(settings, set, authorAlias = 'Le
 
 export async function publishQuizToSupabase(settings, quiz, authorAlias = 'Learner') {
   if (!isConfigured(settings)) throw new Error('Supabase not configured');
-  const url = settings.supabaseUrl.trim().replace(/\/+$/, '');
+  const url = resolveSupabaseConfig(settings).supabaseUrl;
   const rawToken = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
   const ownerTokenHash = await sha256Hex(rawToken);
 
@@ -95,7 +104,7 @@ export async function publishQuizToSupabase(settings, quiz, authorAlias = 'Learn
 
 export async function fetchPublicStudySets(settings, limit = 20) {
   if (!isConfigured(settings)) return [];
-  const url = settings.supabaseUrl.trim().replace(/\/+$/, '');
+  const url = resolveSupabaseConfig(settings).supabaseUrl;
   const selectCols = 'id,short_code,title,description,subject,language,author_alias,cards,card_count,created_at';
   const res = await fetch(
     `${url}/rest/v1/public_study_sets?select=${selectCols}&is_public=eq.true&order=created_at.desc&limit=${limit}`,
@@ -107,7 +116,7 @@ export async function fetchPublicStudySets(settings, limit = 20) {
 
 export async function fetchSharedByShortCode(settings, code) {
   if (!isConfigured(settings) || !code) return null;
-  const url = settings.supabaseUrl.trim().replace(/\/+$/, '');
+  const url = resolveSupabaseConfig(settings).supabaseUrl;
   const cleanCode = encodeURIComponent(code.trim());
 
   const setRes = await fetch(
@@ -132,7 +141,7 @@ export async function fetchSharedByShortCode(settings, code) {
 
 export async function submitQuizChallengeScore(settings, quizId, alias, score, total) {
   if (!isConfigured(settings) || !quizId) return null;
-  const url = settings.supabaseUrl.trim().replace(/\/+$/, '');
+  const url = resolveSupabaseConfig(settings).supabaseUrl;
   const res = await fetch(`${url}/rest/v1/quiz_challenge_attempts`, {
     method: 'POST',
     headers: { ...baseHeaders(settings), 'Prefer': 'return=representation' },
@@ -150,11 +159,32 @@ export async function submitQuizChallengeScore(settings, quizId, alias, score, t
 
 export async function fetchQuizLeaderboard(settings, quizId, limit = 10) {
   if (!isConfigured(settings) || !quizId) return [];
-  const url = settings.supabaseUrl.trim().replace(/\/+$/, '');
+  const url = resolveSupabaseConfig(settings).supabaseUrl;
   const res = await fetch(
     `${url}/rest/v1/quiz_challenge_attempts?select=participant_alias,score,total,created_at&quiz_id=eq.${encodeURIComponent(quizId)}&order=score.desc,created_at.asc&limit=${limit}`,
     { headers: baseHeaders(settings) }
   );
   if (!res.ok) return [];
   return res.json();
+}
+
+
+export async function registerAppUserToSupabase(settings, { fullName, email, language = 'en' }) {
+  if (!isConfigured(settings)) throw new Error('Supabase not configured');
+  const { supabaseUrl } = resolveSupabaseConfig(settings);
+  const body = {
+    full_name: String(fullName || '').trim().slice(0, 120),
+    email: String(email || '').trim().toLowerCase().slice(0, 180),
+    language: String(language || 'en').slice(0, 12)
+  };
+  const res = await fetch(`${supabaseUrl}/rest/v1/app_users`, {
+    method: 'POST',
+    headers: { ...baseHeaders(settings), 'Prefer': 'return=minimal' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`User registration failed (${res.status}): ${errText}`);
+  }
+  return true;
 }
