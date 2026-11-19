@@ -877,3 +877,850 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ==========================================================================
+   FLIPNOTE v3.0 — Full Apple HIG Design System (macOS Sequoia / iOS 18 / visionOS)
+   5 Curated Apple Themes + Liquid Glass Vibrancy + Theme Studio + Voice Pulse
+   ========================================================================== */
+
+:root,
+[data-theme="dark"] {
+  --bg-base: #000000;
+  --bg-gradient: radial-gradient(circle at 14% 10%, rgba(10, 132, 255, 0.22) 0%, transparent 46%),
+                 radial-gradient(circle at 86% 14%, rgba(94, 92, 230, 0.20) 0%, transparent 44%),
+                 radial-gradient(circle at 50% 92%, rgba(48, 209, 88, 0.08) 0%, transparent 45%),
+                 linear-gradient(180deg, #000000 0%, #0b0b0e 52%, #111116 100%);
+  --glass-bg: rgba(28, 28, 30, 0.72);
+  --glass-bg-elevated: rgba(44, 44, 46, 0.84);
+  --glass-bg-hover: rgba(58, 58, 60, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-strong: rgba(255, 255, 255, 0.22);
+  --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --text-primary: #f5f5f7;
+  --text-secondary: #d1d1d6;
+  --text-muted: #8e8e93;
+  --accent: #0a84ff;
+  --accent-strong: #0071e3;
+  --accent-soft: rgba(10, 132, 255, 0.18);
+  --accent-glow: 0 8px 24px rgba(10, 132, 255, 0.34);
+  --success: #30d158;
+  --warning: #ffd60a;
+  --danger: #ff453a;
+  --input-bg: rgba(18, 18, 20, 0.72);
+  --nav-bg: rgba(20, 20, 22, 0.78);
+}
+
+[data-theme="light"] {
+  --bg-base: #f5f5f7;
+  --bg-gradient: radial-gradient(circle at 12% 8%, rgba(0, 122, 255, 0.12) 0%, transparent 45%),
+                 radial-gradient(circle at 88% 16%, rgba(88, 86, 214, 0.10) 0%, transparent 42%),
+                 linear-gradient(180deg, #fbfbfd 0%, #f5f5f7 55%, #ebedf2 100%);
+  --glass-bg: rgba(255, 255, 255, 0.78);
+  --glass-bg-elevated: rgba(255, 255, 255, 0.94);
+  --glass-bg-hover: rgba(255, 255, 255, 0.98);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-border-strong: rgba(0, 0, 0, 0.16);
+  --glass-shadow: 0 12px 34px rgba(0, 0, 0, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  --text-primary: #1d1d1f;
+  --text-secondary: #424245;
+  --text-muted: #6e6e73;
+  --accent: #007aff;
+  --accent-strong: #0062cc;
+  --accent-soft: rgba(0, 122, 255, 0.12);
+  --accent-glow: 0 8px 20px rgba(0, 122, 255, 0.24);
+  --success: #248a3d;
+  --warning: #b25000;
+  --danger: #d70015;
+  --input-bg: rgba(255, 255, 255, 0.88);
+  --nav-bg: rgba(249, 249, 251, 0.82);
+}
+
+[data-theme="liquid-glass"] {
+  --bg-base: #090d1f;
+  --bg-gradient: radial-gradient(circle at 16% 12%, rgba(90, 200, 250, 0.36) 0%, transparent 44%),
+                 radial-gradient(circle at 84% 18%, rgba(191, 90, 242, 0.34) 0%, transparent 44%),
+                 radial-gradient(circle at 52% 86%, rgba(10, 132, 255, 0.30) 0%, transparent 50%),
+                 linear-gradient(150deg, #070b1a 0%, #10193b 50%, #1b1442 100%);
+  --glass-bg: rgba(255, 255, 255, 0.10);
+  --glass-bg-elevated: rgba(255, 255, 255, 0.16);
+  --glass-bg-hover: rgba(255, 255, 255, 0.22);
+  --glass-border: rgba(255, 255, 255, 0.24);
+  --glass-border-strong: rgba(255, 255, 255, 0.38);
+  --glass-shadow: 0 24px 60px rgba(4, 8, 28, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.36), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(245, 247, 255, 0.86);
+  --text-muted: rgba(215, 224, 245, 0.68);
+  --accent: #5ac8fa;
+  --accent-strong: #32ade6;
+  --accent-soft: rgba(90, 200, 250, 0.22);
+  --accent-glow: 0 10px 28px rgba(90, 200, 250, 0.36);
+  --input-bg: rgba(15, 23, 52, 0.42);
+  --nav-bg: rgba(16, 22, 48, 0.54);
+}
+
+[data-theme="apple-notes"] {
+  --bg-base: #faf6ee;
+  --bg-gradient: radial-gradient(circle at 12% 10%, rgba(212, 138, 29, 0.14) 0%, transparent 45%),
+                 radial-gradient(circle at 88% 84%, rgba(235, 180, 76, 0.12) 0%, transparent 46%),
+                 linear-gradient(180deg, #fdfbf5 0%, #f7f1e3 55%, #f1e8d4 100%);
+  --glass-bg: rgba(255, 253, 248, 0.84);
+  --glass-bg-elevated: rgba(255, 254, 250, 0.96);
+  --glass-bg-hover: rgba(255, 251, 242, 0.98);
+  --glass-border: rgba(120, 88, 36, 0.14);
+  --glass-border-strong: rgba(120, 88, 36, 0.24);
+  --glass-shadow: 0 12px 30px rgba(92, 68, 28, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.96);
+  --text-primary: #2c2418;
+  --text-secondary: #534632;
+  --text-muted: #84745c;
+  --accent: #c97a16;
+  --accent-strong: #a8620b;
+  --accent-soft: rgba(201, 122, 22, 0.14);
+  --accent-glow: 0 8px 20px rgba(201, 122, 22, 0.25);
+  --input-bg: rgba(255, 252, 244, 0.92);
+  --nav-bg: rgba(250, 245, 235, 0.88);
+}
+
+[data-theme="sage-focus"] {
+  --bg-base: #0b1411;
+  --bg-gradient: radial-gradient(circle at 16% 12%, rgba(48, 209, 88, 0.22) 0%, transparent 46%),
+                 radial-gradient(circle at 86% 20%, rgba(100, 210, 255, 0.14) 0%, transparent 42%),
+                 linear-gradient(160deg, #09110e 0%, #10201a 52%, #152b23 100%);
+  --glass-bg: rgba(20, 38, 31, 0.72);
+  --glass-bg-elevated: rgba(28, 52, 43, 0.84);
+  --glass-bg-hover: rgba(36, 66, 55, 0.82);
+  --glass-border: rgba(167, 243, 208, 0.14);
+  --glass-border-strong: rgba(167, 243, 208, 0.26);
+  --glass-shadow: 0 20px 48px rgba(3, 12, 8, 0.54), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --text-primary: #f0fdf4;
+  --text-secondary: #cde5d7;
+  --text-muted: #86a897;
+  --accent: #30d158;
+  --accent-strong: #24b047;
+  --accent-soft: rgba(48, 209, 88, 0.18);
+  --accent-glow: 0 8px 24px rgba(48, 209, 88, 0.30);
+  --input-bg: rgba(11, 22, 18, 0.72);
+  --nav-bg: rgba(12, 24, 19, 0.82);
+}
+
+/* Apple HIG Typography & Micro-interactions */
+h1, h2, h3, .view-title, .brand-title {
+  letter-spacing: -0.025em;
+}
+
+.pill, .stat-value, #flashcard-counter, #pomo-display, #quiz-timer {
+  font-variant-numeric: tabular-nums;
+}
+
+.glass-card {
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  transition: transform 0.25s var(--ease-spring), border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.btn {
+  transition: transform 0.18s var(--ease-spring), background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* macOS Window Traffic-Light Accent in Desktop Sidebar */
+.macos-window-dots {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 2px 4px 12px;
+}
+
+.macos-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35);
+}
+
+.macos-dot-red { background: #ff5f57; }
+.macos-dot-yellow { background: #febc2e; }
+.macos-dot-green { background: #28c840; }
+
+/* Apple System Settings — Visual Theme Studio Grid */
+.theme-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(126px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.theme-swatch-card {
+  appearance: none;
+  background: var(--glass-bg);
+  border: 1.5px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 10px;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-primary);
+  transition: transform 0.2s var(--ease-spring), border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.theme-swatch-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--glass-border-strong);
+}
+
+.theme-swatch-card.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.theme-swatch-preview {
+  height: 58px;
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  margin-bottom: 8px;
+}
+
+.theme-swatch-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.theme-swatch-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.theme-swatch-bar {
+  height: 18px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  gap: 5px;
+}
+
+.theme-swatch-pill {
+  width: 24px;
+  height: 7px;
+  border-radius: 999px;
+}
+
+.theme-swatch-name {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Voice-to-Notes Recording Indicator */
+.btn-recording {
+  background: rgba(255, 59, 48, 0.20) !important;
+  border-color: #ff3b30 !important;
+  color: #ff453a !important;
+  box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.55);
+  animation: appleRecPulse 1.4s infinite;
+}
+
+@keyframes appleRecPulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.45); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); }
+}
+
+/* Floating iOS 18 Dock feel for mobile bottom nav */
+@media (max-width: 959px) {
+  .bottom-nav {
+    left: 10px;
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    border-radius: 24px;
+    border: 1px solid var(--glass-border-strong);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+}
+
+/* Clean Print Fallback */
+@media print {
+  .sidebar, .mobile-header, .bottom-nav, .offline-banner, .btn-row {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #1d1d1f !important;
+  }
+  .glass-card {
+    box-shadow: none !important;
+    border: 1px solid #d2d2d7 !important;
+    background: #ffffff !important;
+  }
+}
+
+/* FLIPNOTE v3.1 — Apple-Style Welcome Sign-In Gate */
+.welcome-gate-backdrop {
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.68);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+}
+
+.welcome-gate-card {
+  max-width: 420px;
+  width: calc(100% - 28px);
+  padding: 28px 24px;
+  border-radius: 26px;
+  border: 1px solid var(--glass-border-strong);
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.welcome-gate-brand {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.welcome-gate-brand .brand-logo {
+  margin: 0 auto 12px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+}
+
+.welcome-gate-heading {
+  margin: 0 0 6px;
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.welcome-gate-sub {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+
+.welcome-gate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.welcome-gate-error {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--danger);
+  font-weight: 500;
+}
+
+.welcome-gate-submit {
+  width: 100%;
+  justify-content: center;
+  padding: 12px 16px;
+  font-size: 0.98rem;
+  margin-top: 4px;
+}
+
+/* ==========================================================================
+   FLIPNOTE v4.0 — Mobile-First iOS 18 Liquid Glass Layout & Components
+   ========================================================================== */
+
+.streak-pill {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #ff9f0a;
+  background: rgba(255, 159, 10, 0.16);
+  border: 1px solid rgba(255, 159, 10, 0.42);
+  cursor: pointer;
+  transition: transform 0.18s var(--ease-spring), background-color 0.2s ease;
+}
+
+.streak-pill:active {
+  transform: scale(0.95);
+}
+
+/* 4-Tile Quick Capture Squircle Row */
+.quick-capture-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.qc-tile {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 13px 6px;
+  border-radius: 20px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border-strong);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.18s var(--ease-spring), border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.qc-tile:hover {
+  background: var(--glass-bg-hover);
+  transform: translateY(-2px);
+}
+
+.qc-tile:active {
+  transform: scale(0.95);
+}
+
+.qc-tile.active-sound {
+  border-color: var(--success);
+  color: var(--success);
+  background: rgba(48, 209, 88, 0.14);
+}
+
+/* Apple Notes-Inspired Editor Card */
+.apple-notes-card {
+  padding: 18px 16px 16px;
+}
+
+.editor-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.editor-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.word-badge {
+  font-size: 0.76rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  background: var(--input-bg);
+  border: 1px solid var(--glass-border);
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.apple-note-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.apple-title-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 1.28rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  padding: 4px 2px;
+  outline: none;
+}
+
+.apple-title-input::placeholder {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.apple-subject-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 2px;
+  outline: none;
+}
+
+.apple-subject-input::placeholder {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.apple-note-textarea {
+  background: transparent !important;
+  border: none !important;
+  padding: 6px 2px !important;
+  min-height: 175px;
+  box-shadow: none !important;
+}
+
+/* 2-Button Full-Width Primary CTA Split */
+.cta-split-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.cta-pill-blue {
+  width: 100%;
+  justify-content: center;
+  border-radius: 999px !important;
+  padding: 12px 14px !important;
+  background: linear-gradient(135deg, #0a84ff, #32ade6) !important;
+  box-shadow: 0 8px 22px rgba(10, 132, 255, 0.34);
+}
+
+.cta-pill-indigo {
+  width: 100%;
+  justify-content: center;
+  border-radius: 999px !important;
+  padding: 12px 14px !important;
+  background: linear-gradient(135deg, #5e5ce6, #7d6cf8) !important;
+  box-shadow: 0 8px 22px rgba(94, 92, 230, 0.34);
+}
+
+/* Compact Utility Icon Strip */
+.utility-icon-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--glass-border);
+  overflow-x: auto;
+}
+
+.utility-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 7px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.utility-btn:hover {
+  background: var(--accent-soft);
+  color: var(--text-primary);
+}
+
+/* Focus Sound Modal Buttons */
+.focus-sound-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.focus-sound-btn {
+  appearance: none;
+  width: 100%;
+  text-align: left;
+  padding: 13px 16px;
+  border-radius: 16px;
+  background: var(--glass-bg);
+  border: 1.5px solid var(--glass-border);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.94rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.focus-sound-btn.active {
+  border-color: var(--success);
+  background: rgba(48, 209, 88, 0.16);
+  color: var(--success);
+}
+
+/* ==========================================================================
+   FLIPNOTE v5.0 — Hatke Power Study Modes (Reels, Feynman, Walk, Panic)
+   ========================================================================== */
+
+.power-modes-card {
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+
+.power-modes-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.power-modes-badge {
+  font-size: 0.70rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.power-modes-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.power-modes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+@media (min-width: 720px) {
+  .power-modes-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.pm-pill {
+  appearance: none;
+  padding: 11px 12px;
+  border-radius: 16px;
+  background: var(--glass-bg-elevated);
+  border: 1px solid var(--glass-border-strong);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.18s var(--ease-spring), border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.pm-pill:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.pm-pill-panic {
+  border-color: rgba(255, 159, 10, 0.45);
+  color: #ffb340;
+}
+
+/* Full-Screen Instagram-Style Study Reels Feed */
+.reels-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  background: #000000;
+  display: flex;
+  flex-direction: column;
+}
+
+.reels-overlay[hidden] {
+  display: none !important;
+}
+
+.reels-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: max(14px, env(safe-area-inset-top)) 16px 12px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.72), transparent);
+}
+
+.reels-brand {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.reels-feed {
+  flex: 1;
+  height: 100dvh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.reel-slide {
+  height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 84px 24px 96px;
+  position: relative;
+  text-align: center;
+  color: #ffffff;
+  user-select: none;
+}
+
+.reel-card-glass {
+  max-width: 520px;
+  width: 100%;
+  padding: 28px 22px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(26px) saturate(180%);
+  -webkit-backdrop-filter: blur(26px) saturate(180%);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+}
+
+.reel-q {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.38;
+  margin: 0 0 14px;
+}
+
+.reel-a {
+  font-size: 1.06rem;
+  line-height: 1.55;
+  color: rgba(245, 247, 255, 0.92);
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.20);
+  margin: 0;
+}
+
+.reel-hint {
+  margin-top: 14px;
+  font-size: 0.80rem;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.reel-rail {
+  position: absolute;
+  right: 16px;
+  bottom: 92px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reel-action-btn {
+  appearance: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(16px);
+  color: #ffffff;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.reel-action-btn.liked {
+  background: rgba(255, 55, 95, 0.35);
+  border-color: #ff375f;
+}
+
+/* Feynman & Walk & Panic Styles */
+.feynman-question-box {
+  background: var(--input-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 14px;
+  font-size: 1.04rem;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+.feynman-result-box {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border-strong);
+}
+
+.kw-chip {
+  display: inline-block;
+  padding: 3px 9px;
+  margin: 3px 4px 3px 0;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.kw-hit { background: rgba(48, 209, 88, 0.18); color: #30d158; }
+.kw-miss { background: rgba(255, 159, 10, 0.18); color: #ff9f0a; }
+
+.walk-card-display {
+  min-height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--input-bg);
+  border: 1px solid var(--glass-border);
+  font-size: 1.08rem;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+.panic-card-box {
+  min-height: 170px;
+  padding: 20px;
+  border-radius: 22px;
+  background: var(--input-bg);
+  border: 1px solid var(--glass-border-strong);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.panic-front {
+  margin: 0;
+  font-size: 1.18rem;
+  font-weight: 700;
+}
+
+.panic-back {
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
