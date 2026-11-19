@@ -83,7 +83,11 @@
     "deleteConfirm": "क्या आप इस नोट को हटाना चाहते हैं?",
     "noteSaved": "नोट स्थानीय रूप से सहेजा गया।",
     "noteDeleted": "नोट हटाया गया।",
-    "needContent": "कृपया पहले कुछ नोट टेक्स्ट दर्ज करें।"
+    "needContent": "कृपया पहले कुछ नोट टेक्स्ट दर्ज करें।",
+    "voiceNote": "वॉइस नोट (बोलकर लिखें)",
+    "voiceStop": "माइक बंद करें",
+    "voiceListening": "सुन रहे हैं... अपने नोट्स बोलें",
+    "printPdf": "प्रिंट / PDF"
   },
   "flashcards": {
     "title": "फ्लैशकार्ड स्टूडियो",
@@ -107,7 +111,13 @@
     "cardDeleted": "कार्ड हटाया गया।",
     "deleteCardConfirm": "इस फ्लैशकार्ड को सेट से हटाएं?",
     "setTitlePrompt": "अध्ययन सेट का शीर्षक",
-    "deterministicNotice": "स्थानीय टेक्स्ट विश्लेषण द्वारा निर्मित (बिना किसी पेड AI के)।"
+    "deterministicNotice": "स्थानीय टेक्स्ट विश्लेषण द्वारा निर्मित (बिना किसी पेड AI के)।",
+    "exportCsv": "CSV / Anki एक्सपोर्ट",
+    "importCsv": "CSV इम्पोर्ट",
+    "printSheet": "प्रिंट / PDF",
+    "csvExported": "CSV एक्सपोर्ट हो गया (Anki और Excel के लिए तैयार)",
+    "csvImported": "फ़्लैशकार्ड इम्पोर्ट हुए",
+    "csvImportEmpty": "फ़ाइल में सही Front,Back डेटा नहीं मिला।"
   },
   "quiz": {
     "title": "क्विज़ इंजन",
@@ -232,6 +242,24 @@
     "deleteAll": "सभी स्थानीय डेटा हटाएं",
     "deleteAllConfirm": "इस डिवाइस से सभी नोट्स, फ्लैशकार्ड, क्विज़ और प्रगति स्थायी रूप से हटाएं?",
     "dataDeleted": "सभी स्थानीय डेटा हटा दिया गया।",
-    "settingsSaved": "सेटिंग्स सहेजी गईं।"
+    "settingsSaved": "सेटिंग्स सहेजी गईं।",
+    "liquidGlassTheme": "visionOS लिक्विड ग्लास",
+    "warmPaperTheme": "वॉर्म पेपर (Apple Notes)",
+    "sageFocusTheme": "फ़ॉरेस्ट फ़ोकस (सेज)"
+  },
+  "auth": {
+    "welcomeTitle": "FLIPNOTE में आपका स्वागत है",
+    "welcomeSubtitle": "अपना नाम और ईमेल दर्ज करें और अपनी स्टडी वर्कस्पेस शुरू करें।",
+    "nameLabel": "पूरा नाम",
+    "namePlaceholder": "अपना पूरा नाम लिखें",
+    "emailLabel": "ईमेल एड्रेस",
+    "emailPlaceholder": "you@example.com",
+    "continueBtn": "FLIPNOTE शुरू करें",
+    "invalidName": "कृपया अपना पूरा नाम लिखें (कम से कम 2 अक्षर)।",
+    "invalidEmail": "कृपया सही ईमेल एड्रेस लिखें।",
+    "welcomeToast": "स्वागत है,",
+    "accountTitle": "अकाउंट",
+    "switchAccount": "अपडेट / बदलें",
+    "notSignedIn": "साइन इन नहीं है"
   }
 }

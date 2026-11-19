@@ -83,7 +83,11 @@
     "deleteConfirm": "ఈ నోట్‌ను తొలగించాలా?",
     "noteSaved": "నోట్ సేవ్ అయింది.",
     "noteDeleted": "నోట్ తొలగించబడింది.",
-    "needContent": "దయచేసి ముందుగా కొంత టెక్స్ట్ నమోదు చేయండి."
+    "needContent": "దయచేసి ముందుగా కొంత టెక్స్ట్ నమోదు చేయండి.",
+    "voiceNote": "Voice Note",
+    "voiceStop": "Stop Mic",
+    "voiceListening": "Listening... Speak your notes",
+    "printPdf": "Print / PDF"
   },
   "flashcards": {
     "title": "ఫ్లాష్‌కార్డ్ స్టూడియో",
@@ -107,7 +111,13 @@
     "cardDeleted": "కార్డు తొలగించబడింది.",
     "deleteCardConfirm": "ఈ కార్డును తొలగించాలా?",
     "setTitlePrompt": "స్టడీ సెట్ శీర్షిక",
-    "deterministicNotice": "స్థానిక టెక్స్ట్ విశ్లేషణ ద్వారా రూపొందించబడింది (చెల్లింపు AI అవసరం లేదు)."
+    "deterministicNotice": "స్థానిక టెక్స్ట్ విశ్లేషణ ద్వారా రూపొందించబడింది (చెల్లింపు AI అవసరం లేదు).",
+    "exportCsv": "Export CSV / Anki",
+    "importCsv": "Import CSV",
+    "printSheet": "Print / PDF",
+    "csvExported": "Exported CSV (Anki & Excel ready)",
+    "csvImported": "flashcards imported",
+    "csvImportEmpty": "No valid Front,Back rows found in file."
   },
   "quiz": {
     "title": "క్విజ్ ఇంజిన్",
@@ -232,6 +242,24 @@
     "deleteAll": "అన్ని లోకల్ డేటా తొలగించు",
     "deleteAllConfirm": "ఈ పరికరం నుండి అన్ని నోట్స్, కార్డులు మరియు పురోగతిని శాశ్వతంగా తొలగించాలా?",
     "dataDeleted": "అన్ని లోకల్ డేటా తొలగించబడింది.",
-    "settingsSaved": "సెట్టింగ్స్ సేవ్ అయ్యాయి."
+    "settingsSaved": "సెట్టింగ్స్ సేవ్ అయ్యాయి.",
+    "liquidGlassTheme": "visionOS Liquid Glass",
+    "warmPaperTheme": "Warm Paper (Apple Notes)",
+    "sageFocusTheme": "Forest Focus (Sage)"
+  },
+  "auth": {
+    "welcomeTitle": "Welcome to FLIPNOTE",
+    "welcomeSubtitle": "Enter your name and email to unlock your personal study workspace.",
+    "nameLabel": "Full Name",
+    "namePlaceholder": "Enter your full name",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "continueBtn": "Continue to FLIPNOTE",
+    "invalidName": "Please enter your full name (at least 2 characters).",
+    "invalidEmail": "Please enter a valid email address.",
+    "welcomeToast": "Welcome,",
+    "accountTitle": "Account",
+    "switchAccount": "Update / Switch",
+    "notSignedIn": "Not signed in"
   }
 }

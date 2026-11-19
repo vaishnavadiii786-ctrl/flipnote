@@ -83,7 +83,11 @@
     "deleteConfirm": "இந்தக் குறிப்பை நீக்கவா?",
     "noteSaved": "குறிப்பு சேமிக்கப்பட்டது.",
     "noteDeleted": "குறிப்பு நீக்கப்பட்டது.",
-    "needContent": "முதலில் சிறிது உரையை உள்ளிடவும்."
+    "needContent": "முதலில் சிறிது உரையை உள்ளிடவும்.",
+    "voiceNote": "Voice Note",
+    "voiceStop": "Stop Mic",
+    "voiceListening": "Listening... Speak your notes",
+    "printPdf": "Print / PDF"
   },
   "flashcards": {
     "title": "அட்டைகள் ஸ்டுடியோ",
@@ -107,7 +111,13 @@
     "cardDeleted": "அட்டை நீக்கப்பட்டது.",
     "deleteCardConfirm": "இந்த அட்டையை நீக்கவா?",
     "setTitlePrompt": "தொகுப்பு தலைப்பு",
-    "deterministicNotice": "உள்ளூர் உரை பகுப்பாய்வால் உருவாக்கப்பட்டது (கட்டண AI தேவையில்லை)."
+    "deterministicNotice": "உள்ளூர் உரை பகுப்பாய்வால் உருவாக்கப்பட்டது (கட்டண AI தேவையில்லை).",
+    "exportCsv": "Export CSV / Anki",
+    "importCsv": "Import CSV",
+    "printSheet": "Print / PDF",
+    "csvExported": "Exported CSV (Anki & Excel ready)",
+    "csvImported": "flashcards imported",
+    "csvImportEmpty": "No valid Front,Back rows found in file."
   },
   "quiz": {
     "title": "வினாடி வினா",
@@ -232,6 +242,24 @@
     "deleteAll": "அனைத்து உள்ளூர் தரவையும் அழி",
     "deleteAllConfirm": "இந்தச் சாதனத்திலிருந்து அனைத்து தரவையும் நிரந்தரமாக நீக்கவா?",
     "dataDeleted": "அனைத்து உள்ளூர் தரவும் அழிக்கப்பட்டது.",
-    "settingsSaved": "அமைப்புகள் சேமிக்கப்பட்டன."
+    "settingsSaved": "அமைப்புகள் சேமிக்கப்பட்டன.",
+    "liquidGlassTheme": "visionOS Liquid Glass",
+    "warmPaperTheme": "Warm Paper (Apple Notes)",
+    "sageFocusTheme": "Forest Focus (Sage)"
+  },
+  "auth": {
+    "welcomeTitle": "Welcome to FLIPNOTE",
+    "welcomeSubtitle": "Enter your name and email to unlock your personal study workspace.",
+    "nameLabel": "Full Name",
+    "namePlaceholder": "Enter your full name",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "continueBtn": "Continue to FLIPNOTE",
+    "invalidName": "Please enter your full name (at least 2 characters).",
+    "invalidEmail": "Please enter a valid email address.",
+    "welcomeToast": "Welcome,",
+    "accountTitle": "Account",
+    "switchAccount": "Update / Switch",
+    "notSignedIn": "Not signed in"
   }
 }

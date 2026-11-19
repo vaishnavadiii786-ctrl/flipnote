@@ -83,7 +83,11 @@
     "deleteConfirm": "Diese Notiz dauerhaft löschen?",
     "noteSaved": "Notiz lokal gespeichert.",
     "noteDeleted": "Notiz gelöscht.",
-    "needContent": "Bitte gib zuerst einen Notiztext ein."
+    "needContent": "Bitte gib zuerst einen Notiztext ein.",
+    "voiceNote": "Voice Note",
+    "voiceStop": "Stop Mic",
+    "voiceListening": "Listening... Speak your notes",
+    "printPdf": "Print / PDF"
   },
   "flashcards": {
     "title": "Lernkarten-Studio",
@@ -107,7 +111,13 @@
     "cardDeleted": "Karte entfernt.",
     "deleteCardConfirm": "Diese Lernkarte entfernen?",
     "setTitlePrompt": "Titel des Lernsets",
-    "deterministicNotice": "Lokal durch Textanalyse erstellt (keine kostenpflichtige KI nötig)."
+    "deterministicNotice": "Lokal durch Textanalyse erstellt (keine kostenpflichtige KI nötig).",
+    "exportCsv": "Export CSV / Anki",
+    "importCsv": "Import CSV",
+    "printSheet": "Print / PDF",
+    "csvExported": "Exported CSV (Anki & Excel ready)",
+    "csvImported": "flashcards imported",
+    "csvImportEmpty": "No valid Front,Back rows found in file."
   },
   "quiz": {
     "title": "Quiz-Engine",
@@ -232,6 +242,24 @@
     "deleteAll": "Alle lokalen Daten löschen",
     "deleteAllConfirm": "Alle Notizen, Lernkarten und Fortschritte dauerhaft löschen?",
     "dataDeleted": "Alle lokalen Daten gelöscht.",
-    "settingsSaved": "Einstellungen gespeichert."
+    "settingsSaved": "Einstellungen gespeichert.",
+    "liquidGlassTheme": "visionOS Liquid Glass",
+    "warmPaperTheme": "Warm Paper (Apple Notes)",
+    "sageFocusTheme": "Forest Focus (Sage)"
+  },
+  "auth": {
+    "welcomeTitle": "Welcome to FLIPNOTE",
+    "welcomeSubtitle": "Enter your name and email to unlock your personal study workspace.",
+    "nameLabel": "Full Name",
+    "namePlaceholder": "Enter your full name",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "continueBtn": "Continue to FLIPNOTE",
+    "invalidName": "Please enter your full name (at least 2 characters).",
+    "invalidEmail": "Please enter a valid email address.",
+    "welcomeToast": "Welcome,",
+    "accountTitle": "Account",
+    "switchAccount": "Update / Switch",
+    "notSignedIn": "Not signed in"
   }
 }

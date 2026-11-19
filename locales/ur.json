@@ -83,7 +83,11 @@
     "deleteConfirm": "کیا آپ اس نوٹ کو حذف کرنا چاہتے ہیں؟",
     "noteSaved": "نوٹ محفوظ ہو گیا۔",
     "noteDeleted": "نوٹ حذف ہو گیا۔",
-    "needContent": "براہ کرم پہلے کچھ ٹیکسٹ درج کریں۔"
+    "needContent": "براہ کرم پہلے کچھ ٹیکسٹ درج کریں۔",
+    "voiceNote": "Voice Note",
+    "voiceStop": "Stop Mic",
+    "voiceListening": "Listening... Speak your notes",
+    "printPdf": "Print / PDF"
   },
   "flashcards": {
     "title": "فلیش کارڈ اسٹوڈیو",
@@ -107,7 +111,13 @@
     "cardDeleted": "کارڈ ہٹا دیا گیا۔",
     "deleteCardConfirm": "اس کارڈ کو ہٹائیں؟",
     "setTitlePrompt": "اسٹڈی سیٹ کا عنوان",
-    "deterministicNotice": "مقامی ٹیکسٹ تجزیہ سے تیار کردہ (بغیر پیڈ AI)۔"
+    "deterministicNotice": "مقامی ٹیکسٹ تجزیہ سے تیار کردہ (بغیر پیڈ AI)۔",
+    "exportCsv": "Export CSV / Anki",
+    "importCsv": "Import CSV",
+    "printSheet": "Print / PDF",
+    "csvExported": "Exported CSV (Anki & Excel ready)",
+    "csvImported": "flashcards imported",
+    "csvImportEmpty": "No valid Front,Back rows found in file."
   },
   "quiz": {
     "title": "کوئز انجن",
@@ -232,6 +242,24 @@
     "deleteAll": "تمام مقامی ڈیٹا حذف کریں",
     "deleteAllConfirm": "اس ڈیوائس سے تمام نوٹس، کارڈز اور پیشرفت مستقل طور پر حذف کریں؟",
     "dataDeleted": "تمام مقامی ڈیٹا حذف کر دیا گیا۔",
-    "settingsSaved": "ترتیبات محفوظ ہو گئیں۔"
+    "settingsSaved": "ترتیبات محفوظ ہو گئیں۔",
+    "liquidGlassTheme": "visionOS Liquid Glass",
+    "warmPaperTheme": "Warm Paper (Apple Notes)",
+    "sageFocusTheme": "Forest Focus (Sage)"
+  },
+  "auth": {
+    "welcomeTitle": "Welcome to FLIPNOTE",
+    "welcomeSubtitle": "Enter your name and email to unlock your personal study workspace.",
+    "nameLabel": "Full Name",
+    "namePlaceholder": "Enter your full name",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "continueBtn": "Continue to FLIPNOTE",
+    "invalidName": "Please enter your full name (at least 2 characters).",
+    "invalidEmail": "Please enter a valid email address.",
+    "welcomeToast": "Welcome,",
+    "accountTitle": "Account",
+    "switchAccount": "Update / Switch",
+    "notSignedIn": "Not signed in"
   }
 }

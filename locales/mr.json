@@ -83,7 +83,11 @@
     "deleteConfirm": "ही नोट कायमची हटवायची का?",
     "noteSaved": "नोट जतन केली.",
     "noteDeleted": "नोट हटवली.",
-    "needContent": "कृपया आधी काही मजकूर प्रविष्ट करा."
+    "needContent": "कृपया आधी काही मजकूर प्रविष्ट करा.",
+    "voiceNote": "Voice Note",
+    "voiceStop": "Stop Mic",
+    "voiceListening": "Listening... Speak your notes",
+    "printPdf": "Print / PDF"
   },
   "flashcards": {
     "title": "फ्लॅशकार्ड स्टुडिओ",
@@ -107,7 +111,13 @@
     "cardDeleted": "कार्ड काढले.",
     "deleteCardConfirm": "हे कार्ड काढायचे का?",
     "setTitlePrompt": "अभ्यास सेटचे शीर्षक",
-    "deterministicNotice": "स्थानिक मजकूर विश्लेषणाद्वारे तयार केले (पेड AI आवश्यक नाही)."
+    "deterministicNotice": "स्थानिक मजकूर विश्लेषणाद्वारे तयार केले (पेड AI आवश्यक नाही).",
+    "exportCsv": "Export CSV / Anki",
+    "importCsv": "Import CSV",
+    "printSheet": "Print / PDF",
+    "csvExported": "Exported CSV (Anki & Excel ready)",
+    "csvImported": "flashcards imported",
+    "csvImportEmpty": "No valid Front,Back rows found in file."
   },
   "quiz": {
     "title": "क्विझ इंजिन",
@@ -232,6 +242,24 @@
     "deleteAll": "सर्व स्थानिक डेटा हटवा",
     "deleteAllConfirm": "या डिव्हाइसवरून सर्व नोट्स, कार्ड्स आणि प्रगती कायमची हटवायची का?",
     "dataDeleted": "सर्व स्थानिक डेटा हटवला.",
-    "settingsSaved": "सेटिंग्ज जतन केल्या."
+    "settingsSaved": "सेटिंग्ज जतन केल्या.",
+    "liquidGlassTheme": "visionOS Liquid Glass",
+    "warmPaperTheme": "Warm Paper (Apple Notes)",
+    "sageFocusTheme": "Forest Focus (Sage)"
+  },
+  "auth": {
+    "welcomeTitle": "Welcome to FLIPNOTE",
+    "welcomeSubtitle": "Enter your name and email to unlock your personal study workspace.",
+    "nameLabel": "Full Name",
+    "namePlaceholder": "Enter your full name",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "continueBtn": "Continue to FLIPNOTE",
+    "invalidName": "Please enter your full name (at least 2 characters).",
+    "invalidEmail": "Please enter a valid email address.",
+    "welcomeToast": "Welcome,",
+    "accountTitle": "Account",
+    "switchAccount": "Update / Switch",
+    "notSignedIn": "Not signed in"
   }
 }
