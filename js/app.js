@@ -28,6 +28,9 @@ import {
   generateInstantShareLink, exportStudyMaterialJson, parseImportedInput, normalizeSharedObject
 } from './sharing.js';
 import {
+  speakText, stopSpeaking, calculateStudyStreak, calculateExamNetScore, formatTimerMMSS, downloadQuizResultCard
+} from './v2.js';
+import {
   isSupabaseReady, publishStudySetToSupabase, publishQuizToSupabase,
   fetchPublicStudySets, fetchSharedByShortCode
 } from './supabase.js';
@@ -49,7 +52,13 @@ const state = {
   revIndex: 0,
   libraryFilter: 'all',
   shareTarget: null,
-  deferredInstallPrompt: null
+  deferredInstallPrompt: null,
+  examTimerId: null,
+  examSecondsLeft: 0,
+  lastQuizSummary: null,
+  pomoTimerId: null,
+  pomoMode: 'focus',
+  pomoSecondsLeft: 25 * 60
 };
 
 async function bootstrap() {
@@ -144,6 +153,10 @@ function bindEvents() {
   window.addEventListener('offline', updateOnlineStatus);
   window.addEventListener('hashchange', handleHashNavigation);
 
+  if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
+    const b = document.getElementById('btn-install-pwa');
+    if (b) b.hidden = true;
+  }
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     state.deferredInstallPrompt = e;
@@ -242,6 +255,34 @@ function bindEvents() {
     renderFlashcardStudio();
   });
   document.getElementById('btn-fc-add')?.addEventListener('click', () => openCardEditor(null));
+  document.getElementById('btn-fc-speak')?.addEventListener('click', () => {
+    const card = state.activeSet.cards[state.fcIndex];
+    if (!card) return;
+    const text = state.fcFlipped ? card.back : card.front;
+    const lang = state.activeSet.language || getCurrentLanguage();
+    if (!speakText(text, lang)) showToast('Audio speech is not supported on this browser.');
+  });
+  document.getElementById('btn-rev-speak')?.addEventListener('click', () => {
+    const item = state.revQueue[state.revIndex];
+    if (!item) return;
+    const flipped = document.getElementById('rev-card-3d')?.classList.contains('is-flipped');
+    const text = flipped ? item.card.back : item.card.front;
+    if (!speakText(text, getCurrentLanguage())) showToast('Audio speech is not supported on this browser.');
+  });
+  document.getElementById('quiz-exam-mode')?.addEventListener('change', () => {
+    if (state.quizOrder.length && state.quizIdx < state.quizOrder.length) {
+      setupExamTimer();
+    }
+  });
+  document.getElementById('btn-quiz-download-card')?.addEventListener('click', () => {
+    if (!state.lastQuizSummary) return;
+    downloadQuizResultCard(state.lastQuizSummary);
+    showToast('Quiz result card downloaded!');
+  });
+  document.getElementById('btn-pomo-start')?.addEventListener('click', startPomodoro);
+  document.getElementById('btn-pomo-pause')?.addEventListener('click', pausePomodoro);
+  document.getElementById('btn-pomo-reset')?.addEventListener('click', resetPomodoro);
+  document.getElementById('btn-pomo-mode')?.addEventListener('click', togglePomodoroMode);
   document.getElementById('btn-fc-edit-card')?.addEventListener('click', () => {
     const card = state.activeSet.cards[state.fcIndex];
     if (card) openCardEditor(card);
@@ -683,6 +724,7 @@ function startQuizRun(questions) {
   state.quizMissed = [];
   state.quizAnswered = false;
   document.getElementById('quiz-complete').hidden = true;
+  setupExamTimer();
   renderQuizView();
 }
 
@@ -702,9 +744,24 @@ function renderQuizView() {
   if (state.quizIdx >= state.quizOrder.length) {
     activeEl.hidden = true;
     completeEl.hidden = false;
+    stopExamTimer();
     const total = state.quizOrder.length;
+    const wrong = state.quizMissed.length;
+    const examMode = Boolean(document.getElementById('quiz-exam-mode')?.checked);
+    const negMarking = Boolean(document.getElementById('quiz-neg-marking')?.checked);
+    const netScore = calculateExamNetScore(state.quizScore, wrong, negMarking);
     const pct = Math.round((state.quizScore / total) * 100);
-    document.getElementById('quiz-final-score').textContent = `${state.quizScore} / ${total} (${pct}%)`;
+    state.lastQuizSummary = {
+      title: state.activeQuiz.title || 'FLIPNOTE Quiz',
+      score: state.quizScore,
+      total,
+      netScore,
+      percent: pct,
+      examMode: examMode || negMarking
+    };
+    document.getElementById('quiz-final-score').textContent = negMarking
+      ? `${state.quizScore} / ${total} (${pct}%) · Net: ${netScore}`
+      : `${state.quizScore} / ${total} (${pct}%)`;
     const retryWrongBtn = document.getElementById('btn-quiz-retry-wrong');
     if (state.quizMissed.length > 0) {
       retryWrongBtn.hidden = false;
@@ -1124,6 +1181,9 @@ async function renderProgress() {
   document.getElementById('stat-sessions').textContent = formatNumber(sessions.length, getCurrentLanguage());
   document.getElementById('stat-quizzes').textContent = formatNumber(quizHistory.length, getCurrentLanguage());
   document.getElementById('stat-cards-reviewed').textContent = formatNumber(revLogs.length, getCurrentLanguage());
+  const streak = calculateStudyStreak(sessions, revLogs);
+  const streakEl = document.getElementById('stat-streak-pill');
+  if (streakEl) streakEl.textContent = `🔥 ${formatNumber(streak, getCurrentLanguage())} Day Streak`;
 
   const avg = quizHistory.length
     ? Math.round(quizHistory.reduce((acc, q) => acc + (q.percent || 0), 0) / quizHistory.length)
@@ -1205,3 +1265,88 @@ async function handleSaveSettings() {
 }
 
 bootstrap();
+
+// ============================================================================
+// v2 Helpers: Exam Timer & Pomodoro
+// ============================================================================
+function stopExamTimer() {
+  if (state.examTimerId) {
+    clearInterval(state.examTimerId);
+    state.examTimerId = null;
+  }
+  const pill = document.getElementById('quiz-timer-pill');
+  if (pill) pill.hidden = true;
+}
+
+function setupExamTimer() {
+  stopExamTimer();
+  const enabled = Boolean(document.getElementById('quiz-exam-mode')?.checked);
+  if (!enabled || !state.quizOrder.length) return;
+  const pill = document.getElementById('quiz-timer-pill');
+  state.examSecondsLeft = state.quizOrder.length * 60;
+  if (pill) {
+    pill.textContent = formatTimerMMSS(state.examSecondsLeft);
+    pill.hidden = false;
+  }
+  state.examTimerId = setInterval(() => {
+    state.examSecondsLeft--;
+    if (pill) pill.textContent = formatTimerMMSS(state.examSecondsLeft);
+    if (state.examSecondsLeft <= 0) {
+      stopExamTimer();
+      state.quizIdx = state.quizOrder.length;
+      renderQuizView();
+      showToast('Exam time is up!');
+    }
+  }, 1000);
+}
+
+function renderPomodoro() {
+  const disp = document.getElementById('pomodoro-display');
+  const label = document.getElementById('pomodoro-mode-label');
+  if (disp) disp.textContent = formatTimerMMSS(state.pomoSecondsLeft);
+  if (label) label.textContent = state.pomoMode === 'focus' ? 'Focus (25m)' : 'Break (5m)';
+}
+
+function startPomodoro() {
+  if (state.pomoTimerId) return;
+  renderPomodoro();
+  state.pomoTimerId = setInterval(async () => {
+    state.pomoSecondsLeft--;
+    renderPomodoro();
+    if (state.pomoSecondsLeft <= 0) {
+      pausePomodoro();
+      if (state.pomoMode === 'focus') {
+        await logStudySession('pomodoro', 1);
+        showToast('Focus session complete! Take a 5-minute break.');
+        state.pomoMode = 'break';
+        state.pomoSecondsLeft = 5 * 60;
+      } else {
+        showToast('Break finished! Ready for the next focus session.');
+        state.pomoMode = 'focus';
+        state.pomoSecondsLeft = 25 * 60;
+      }
+      renderPomodoro();
+      renderProgress();
+    }
+  }, 1000);
+}
+
+function pausePomodoro() {
+  if (state.pomoTimerId) {
+    clearInterval(state.pomoTimerId);
+    state.pomoTimerId = null;
+  }
+}
+
+function resetPomodoro() {
+  pausePomodoro();
+  state.pomoSecondsLeft = state.pomoMode === 'focus' ? 25 * 60 : 5 * 60;
+  renderPomodoro();
+}
+
+function togglePomodoroMode() {
+  pausePomodoro();
+  state.pomoMode = state.pomoMode === 'focus' ? 'break' : 'focus';
+  state.pomoSecondsLeft = state.pomoMode === 'focus' ? 25 * 60 : 5 * 60;
+  renderPomodoro();
+}
