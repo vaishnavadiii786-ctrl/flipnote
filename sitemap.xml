@@ -2,22 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://vaishnavadiii786-ctrl.github.io/flipnote/</loc>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-11-19</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://vaishnavadiii786-ctrl.github.io/flipnote/features/free-study-app.html</loc>
+    <lastmod>2026-11-19</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://vaishnavadiii786-ctrl.github.io/flipnote/features/pdf-to-flashcards.html</loc>
+    <lastmod>2026-11-19</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://vaishnavadiii786-ctrl.github.io/flipnote/features/exam-preparation-quiz.html</loc>
+    <lastmod>2026-11-19</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://vaishnavadiii786-ctrl.github.io/flipnote/features/free-quizlet-alternative.html</loc>
+    <lastmod>2026-11-19</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://vaishnavadiii786-ctrl.github.io/flipnote/features/flashcards.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-11-19</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://vaishnavadiii786-ctrl.github.io/flipnote/features/quiz.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-11-19</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://vaishnavadiii786-ctrl.github.io/flipnote/features/revision.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-11-19</lastmod>
     <priority>0.9</priority>
   </url>
 </urlset>

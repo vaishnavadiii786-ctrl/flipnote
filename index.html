@@ -53,6 +53,11 @@
   <div class="app-shell">
     <!-- Desktop Sidebar -->
     <aside class="sidebar" aria-label="Primary navigation">
+      <div class="macos-window-dots" aria-hidden="true">
+        <span class="macos-dot macos-dot-red"></span>
+        <span class="macos-dot macos-dot-yellow"></span>
+        <span class="macos-dot macos-dot-green"></span>
+      </div>
       <div class="brand-lockup">
         <img src="./assets/icons/icon-192.png" alt="FLIPNOTE logo" class="brand-logo" width="34" height="34" />
         <div>
@@ -106,6 +111,7 @@
           </div>
         </div>
         <div class="header-actions">
+          <button id="header-streak-pill" class="streak-pill" type="button" title="Daily study streak" aria-label="Study streak">🔥 0d</button>
           <button id="btn-install-pwa" class="btn btn-secondary btn-sm" type="button" hidden>Install</button>
           <button id="btn-theme-toggle" class="btn btn-secondary btn-icon" type="button" aria-label="Toggle theme" title="Toggle theme">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -123,48 +129,82 @@
           <p class="view-subtitle" data-i18n="notes.subtitle">Paste notes, import a PDF, or extract text from an image.</p>
         </div>
 
-        <article class="glass-card">
-          <div class="grid-2">
-            <div class="field-group">
-              <label for="note-title" class="sr-only" data-i18n="notes.noteTitlePlaceholder">Note title</label>
-              <input id="note-title" class="input" type="text" data-i18n-placeholder="notes.noteTitlePlaceholder" placeholder="Note title (e.g., Cell Biology — Mitosis)" />
-            </div>
-            <div class="field-group">
-              <label for="note-subject" class="sr-only" data-i18n="notes.subjectPlaceholder">Subject</label>
-              <input id="note-subject" class="input" type="text" data-i18n-placeholder="notes.subjectPlaceholder" placeholder="Subject / Topic (optional)" />
-            </div>
-          </div>
+        <!-- iOS 18 Quick Capture 4-Tile Squircle Row -->
+        <div class="quick-capture-grid" aria-label="Quick capture actions">
+          <button id="btn-voice-note" class="qc-tile" type="button">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            <span data-i18n="notes.voiceNote">Voice</span>
+          </button>
+          <label class="qc-tile" style="cursor:pointer;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span data-i18n="notes.importPdf">PDF</span>
+            <input id="input-pdf-file" type="file" accept="application/pdf,.pdf" hidden />
+          </label>
+          <label class="qc-tile" style="cursor:pointer;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span data-i18n="notes.importImage">Scan</span>
+            <input id="input-ocr-file" type="file" accept="image/*" hidden />
+          </label>
+          <button id="btn-focus-sounds" class="qc-tile" type="button">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+            <span>Focus</span>
+          </button>
+        </div>
 
-          <div class="btn-row" style="justify-content:space-between; margin-bottom:10px;">
+        <!-- Apple Notes-Inspired Frosted Editor Card -->
+        <article class="glass-card apple-notes-card">
+          <div class="editor-topbar">
             <div class="segmented" role="tablist">
               <button id="btn-note-edit-mode" class="segmented-btn active" type="button" data-i18n="notes.editMode">Edit</button>
               <button id="btn-note-preview-mode" class="segmented-btn" type="button" data-i18n="notes.previewMode">Preview</button>
             </div>
-            <div class="btn-row">
-              <button id="btn-load-sample" class="btn btn-ghost btn-sm" type="button" data-i18n="notes.pasteSample">Load Sample</button>
-              <label class="btn btn-secondary btn-sm" style="cursor:pointer;">
-                <span data-i18n="notes.importPdf">Import PDF</span>
-                <input id="input-pdf-file" type="file" accept="application/pdf,.pdf" hidden />
-              </label>
-              <label class="btn btn-secondary btn-sm" style="cursor:pointer;">
-                <span data-i18n="notes.importImage">Scan Image (OCR)</span>
-                <input id="input-ocr-file" type="file" accept="image/*" hidden />
-              </label>
+            <div class="editor-topbar-right">
+              <span id="note-word-badge" class="word-badge">0 words</span>
+              <button id="btn-load-sample" class="btn btn-ghost btn-sm" type="button" data-i18n="notes.pasteSample">Sample</button>
             </div>
+          </div>
+
+          <div class="apple-note-fields">
+            <label for="note-title" class="sr-only" data-i18n="notes.noteTitlePlaceholder">Note title</label>
+            <input id="note-title" class="apple-title-input" type="text" data-i18n-placeholder="notes.noteTitlePlaceholder" placeholder="Note title (e.g., Cell Biology — Mitosis)" />
+            <label for="note-subject" class="sr-only" data-i18n="notes.subjectPlaceholder">Subject</label>
+            <input id="note-subject" class="apple-subject-input" type="text" data-i18n-placeholder="notes.subjectPlaceholder" placeholder="#Subject / Topic (optional)" />
           </div>
 
           <div id="note-status" class="pill" style="margin-bottom:10px;" hidden></div>
 
-          <textarea id="note-content" class="textarea" data-i18n-placeholder="notes.contentPlaceholder" placeholder="Paste or type your study notes here..."></textarea>
+          <textarea id="note-content" class="textarea apple-note-textarea" data-i18n-placeholder="notes.contentPlaceholder" placeholder="Paste, type, or dictate your study notes here..."></textarea>
           <div id="note-preview" class="note-preview" hidden></div>
           <div id="note-summary-box" class="glass-card" style="margin-top:12px; padding:14px;" hidden></div>
 
-          <div class="btn-row" style="margin-top:14px;">
-            <button id="btn-save-note" class="btn btn-secondary" type="button" data-i18n="notes.saveNote">Save Note</button>
-            <button id="btn-gen-flashcards" class="btn btn-primary" type="button" data-i18n="notes.generateFlashcards">Generate Flashcards</button>
-            <button id="btn-gen-quiz" class="btn btn-primary" type="button" data-i18n="notes.generateQuiz">Generate Quiz</button>
-            <button id="btn-summarize-note" class="btn btn-secondary" type="button">Summarize</button>
-            <button id="btn-clear-note" class="btn btn-ghost btn-sm" type="button" data-i18n="common.clear">Clear</button>
+          <!-- Clean 2-Button Primary CTA Split -->
+          <div class="cta-split-row">
+            <button id="btn-gen-flashcards" class="btn btn-primary cta-pill-blue" type="button" data-i18n="notes.generateFlashcards">Flashcards</button>
+            <button id="btn-gen-quiz" class="btn btn-primary cta-pill-indigo" type="button" data-i18n="notes.generateQuiz">Quiz</button>
+          </div>
+
+          <!-- Compact 5-Action Utility Strip -->
+          <div class="utility-icon-row">
+            <button id="btn-save-note" class="utility-btn" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              <span data-i18n="notes.saveNote">Save</span>
+            </button>
+            <button id="btn-summarize-note" class="utility-btn" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              <span>Summary</span>
+            </button>
+            <button id="btn-mind-map" class="utility-btn" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><circle cx="5" cy="19" r="2"/><line x1="14.2" y1="9.8" x2="17.5" y2="6.5"/><line x1="9.8" y1="9.8" x2="6.5" y2="6.5"/><line x1="14.2" y1="14.2" x2="17.5" y2="17.5"/><line x1="9.8" y1="14.2" x2="6.5" y2="17.5"/></svg>
+              <span>Mind Map</span>
+            </button>
+            <button id="btn-print-note" class="utility-btn" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              <span data-i18n="notes.printPdf">Print PDF</span>
+            </button>
+            <button id="btn-clear-note" class="utility-btn" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+              <span data-i18n="common.clear">Clear</span>
+            </button>
           </div>
         </article>
 
@@ -184,6 +224,21 @@
           <p class="view-subtitle" data-i18n="flashcards.subtitle">Flip cards, edit Q&amp;A, shuffle, and save study sets.</p>
         </div>
 
+
+        <!-- v5.0 Hatke Power Study Modes Bar -->
+        <div class="power-modes-card glass-card">
+          <div class="power-modes-head">
+            <span class="power-modes-badge">NEW v5.0</span>
+            <span class="power-modes-title">Power Study Modes</span>
+          </div>
+          <div class="power-modes-grid">
+            <button id="btn-study-reels" class="pm-pill" type="button">🎬 Study Reels</button>
+            <button id="btn-feynman-mode" class="pm-pill" type="button">🎙️ Teach It Back</button>
+            <button id="btn-walk-revise" class="pm-pill" type="button">🎧 Walk &amp; Revise</button>
+            <button id="btn-exam-panic" class="pm-pill pm-pill-panic" type="button">⚡ 10-Min Panic</button>
+          </div>
+        </div>
+
         <article class="glass-card" id="flashcards-workspace">
           <div class="btn-row" style="justify-content:space-between; margin-bottom:12px;">
             <div class="btn-row">
@@ -195,6 +250,12 @@
               <button id="btn-fc-add" class="btn btn-secondary btn-sm" type="button" data-i18n="flashcards.addCard">Add Card</button>
               <button id="btn-fc-save" class="btn btn-primary btn-sm" type="button" data-i18n="flashcards.saveSet">Save Study Set</button>
               <button id="btn-fc-share" class="btn btn-secondary btn-sm" type="button" data-i18n="flashcards.shareSet">Share Set</button>
+              <button id="btn-fc-export-csv" class="btn btn-secondary btn-sm" type="button" data-i18n="flashcards.exportCsv">Export CSV / Anki</button>
+              <label class="btn btn-secondary btn-sm" style="cursor:pointer;">
+                <span data-i18n="flashcards.importCsv">Import CSV</span>
+                <input id="input-fc-import-csv" type="file" accept=".csv,.tsv,.txt,text/csv,text/plain" hidden />
+              </label>
+              <button id="btn-fc-print" class="btn btn-secondary btn-sm" type="button" data-i18n="flashcards.printSheet">Print / PDF</button>
             </div>
           </div>
 
@@ -466,14 +527,38 @@
             <div class="field-group">
               <label for="setting-theme" class="field-label" data-i18n="settings.theme">Theme</label>
               <select id="setting-theme" class="select">
-                <option value="dark" data-i18n="settings.darkTheme">Dark Glass (Blue &amp; Purple)</option>
-                <option value="light" data-i18n="settings.lightTheme">Light Frosted Glass</option>
+                <option value="dark" data-i18n="settings.darkTheme">Midnight Dark (Apple)</option>
+                <option value="light" data-i18n="settings.lightTheme">macOS Sequoia Light</option>
+                <option value="liquid-glass" data-i18n="settings.liquidGlassTheme">visionOS Liquid Glass</option>
+                <option value="apple-notes" data-i18n="settings.warmPaperTheme">Warm Paper (Apple Notes)</option>
+                <option value="sage-focus" data-i18n="settings.sageFocusTheme">Forest Focus (Sage)</option>
               </select>
             </div>
             <div class="field-group">
               <label for="setting-interface-lang" class="field-label" data-i18n="settings.interfaceLang">Interface Language</label>
               <select id="setting-interface-lang" class="select"></select>
             </div>
+          </div>
+          <div id="theme-picker-grid" class="theme-picker-grid" role="radiogroup" aria-label="Apple Theme Studio"></div>
+        </article>
+
+        <article class="glass-card" id="settings-account-card">
+          <div class="btn-row" style="justify-content:space-between; align-items:center;">
+            <div>
+              <h3 style="margin:0 0 4px; font-size:1.05rem;" data-i18n="auth.accountTitle">Account</h3>
+              <p id="settings-account-summary" class="view-subtitle" style="margin:0;">Signed in</p>
+            </div>
+            <button id="btn-switch-account" class="btn btn-secondary btn-sm" type="button" data-i18n="auth.switchAccount">Update / Switch</button>
+          </div>
+        </article>
+
+        <article class="glass-card" id="settings-support-card">
+          <div class="btn-row" style="justify-content:space-between; align-items:center;">
+            <div>
+              <h3 style="margin:0 0 4px; font-size:1.05rem;">Support &amp; Feedback</h3>
+              <p class="view-subtitle" style="margin:0;">Questions, bug reports, or feature ideas: <a href="mailto:flipnote.app2006@gmail.com" style="color:var(--accent); text-decoration:none; font-weight:500;">flipnote.app2006@gmail.com</a></p>
+            </div>
+            <a class="btn btn-secondary btn-sm" href="mailto:flipnote.app2006@gmail.com?subject=FLIPNOTE%20Feedback" style="text-decoration:none;">Email Support</a>
           </div>
         </article>
 
@@ -691,5 +776,136 @@
   <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
   <script type="module" src="./js/app.js"></script>
+  <!-- Apple-Style Welcome Sign-In Gate (Name + Email) -->
+  <div id="welcome-gate-modal" class="modal-backdrop welcome-gate-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="welcome-gate-title">
+    <div class="modal-card welcome-gate-card">
+      <div class="welcome-gate-brand">
+        <img src="./assets/icons/icon-192.png" alt="FLIPNOTE logo" width="48" height="48" class="brand-logo" />
+        <h2 id="welcome-gate-title" class="welcome-gate-heading" data-i18n="auth.welcomeTitle">Welcome to FLIPNOTE</h2>
+        <p class="welcome-gate-sub" data-i18n="auth.welcomeSubtitle">Enter your name and email to unlock your personal study workspace.</p>
+      </div>
+      <form id="welcome-gate-form" class="welcome-gate-form" novalidate>
+        <div class="field-group">
+          <label for="auth-full-name" class="field-label" data-i18n="auth.nameLabel">Full Name</label>
+          <input id="auth-full-name" class="input" type="text" autocomplete="name" required data-i18n-placeholder="auth.namePlaceholder" placeholder="Enter your full name" />
+        </div>
+        <div class="field-group">
+          <label for="auth-email" class="field-label" data-i18n="auth.emailLabel">Email Address</label>
+          <input id="auth-email" class="input" type="email" autocomplete="email" required data-i18n-placeholder="auth.emailPlaceholder" placeholder="you@example.com" />
+        </div>
+        <p id="welcome-gate-error" class="welcome-gate-error" hidden></p>
+        <button id="btn-auth-continue" class="btn btn-primary welcome-gate-submit" type="submit" data-i18n="auth.continueBtn">Continue to FLIPNOTE</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- v4.0 Auto Mind Map Modal -->
+  <div id="mindmap-modal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="mindmap-title">
+    <div class="modal-card" style="max-width:760px; width:calc(100% - 24px);">
+      <div class="btn-row" style="justify-content:space-between; margin-bottom:12px;">
+        <h3 id="mindmap-title" style="margin:0;">Concept Mind Map</h3>
+        <div class="btn-row">
+          <button id="btn-mindmap-download" class="btn btn-secondary btn-sm" type="button">Download SVG</button>
+          <button id="btn-mindmap-close" class="btn btn-ghost btn-sm" type="button">Close</button>
+        </div>
+      </div>
+      <div id="mindmap-stage" style="overflow-x:auto; border-radius:16px;"></div>
+    </div>
+  </div>
+
+  <!-- v4.0 Offline Focus Sounds Modal -->
+  <div id="focus-audio-modal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="focus-audio-title">
+    <div class="modal-card" style="max-width:400px; width:calc(100% - 28px);">
+      <div class="btn-row" style="justify-content:space-between; margin-bottom:12px;">
+        <h3 id="focus-audio-title" style="margin:0;">Focus Sounds (Offline)</h3>
+        <button id="btn-focus-close" class="btn btn-ghost btn-sm" type="button">Close</button>
+      </div>
+      <p class="view-subtitle" style="margin:0 0 14px;">100% offline calming soundscapes for deep study.</p>
+      <div class="focus-sound-grid">
+        <button class="focus-sound-btn" data-sound="rain" type="button">🌧️ Gentle Rain</button>
+        <button class="focus-sound-btn" data-sound="brown" type="button">🌊 Deep Brown Noise</button>
+        <button class="focus-sound-btn" data-sound="lofi" type="button">🎧 Warm Lo-Fi Pad</button>
+      </div>
+      <div style="margin-top:16px;">
+        <label for="focus-volume" class="field-label" style="display:flex; justify-content:space-between;">
+          <span>Volume</span><span id="focus-volume-label">35%</span>
+        </label>
+        <input id="focus-volume" type="range" min="0" max="100" value="35" style="width:100%; accent-color:var(--accent);" />
+      </div>
+      <button id="btn-focus-stop" class="btn btn-secondary" type="button" style="width:100%; justify-content:center; margin-top:14px;">Stop Audio</button>
+    </div>
+  </div>
+
+  <!-- v5.0 Modal 1: Study Reels (Instagram-Style Vertical Swipe Feed) -->
+  <div id="study-reels-modal" class="reels-overlay" hidden role="dialog" aria-modal="true" aria-label="Study Reels">
+    <div class="reels-topbar">
+      <span class="reels-brand">FLIPNOTE Reels</span>
+      <span id="reels-counter" class="pill">1 / 1</span>
+      <button id="btn-reels-close" class="btn btn-secondary btn-sm" type="button">Close</button>
+    </div>
+    <div id="reels-feed" class="reels-feed"></div>
+  </div>
+
+  <!-- v5.0 Modal 2: Teach It Back (Feynman Voice Recall) -->
+  <div id="feynman-modal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="feynman-title">
+    <div class="modal-card" style="max-width:540px; width:calc(100% - 24px);">
+      <div class="btn-row" style="justify-content:space-between; margin-bottom:10px;">
+        <h3 id="feynman-title" style="margin:0;">🎙️ Teach It Back (Feynman Mode)</h3>
+        <button id="btn-feynman-close" class="btn btn-ghost btn-sm" type="button">Close</button>
+      </div>
+      <p id="feynman-question" class="feynman-question-box"></p>
+      <div class="btn-row" style="margin-bottom:10px;">
+        <button id="btn-feynman-mic" class="btn btn-primary btn-sm" type="button">🎙️ Speak Explanation</button>
+        <button id="btn-feynman-next" class="btn btn-secondary btn-sm" type="button">Next Card</button>
+      </div>
+      <textarea id="feynman-input" class="textarea" style="min-height:110px;" placeholder="Explain this concept in your own words (speak or type)..."></textarea>
+      <div class="btn-row" style="margin-top:10px;">
+        <button id="btn-feynman-check" class="btn btn-primary" type="button" style="flex:1; justify-content:center;">Check Recall Score</button>
+      </div>
+      <div id="feynman-result" class="feynman-result-box" hidden></div>
+    </div>
+  </div>
+
+  <!-- v5.0 Modal 3: Walk & Revise (Hands-Free Audio Podcast Loop) -->
+  <div id="walk-revise-modal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="walk-title">
+    <div class="modal-card" style="max-width:440px; width:calc(100% - 28px); text-align:center;">
+      <div class="btn-row" style="justify-content:space-between; margin-bottom:14px;">
+        <h3 id="walk-title" style="margin:0;">🎧 Walk &amp; Revise</h3>
+        <button id="btn-walk-close" class="btn btn-ghost btn-sm" type="button">Close</button>
+      </div>
+      <div id="walk-phase-pill" class="pill" style="margin:0 auto 14px;">Ready • Hands-Free Audio</div>
+      <p id="walk-card-text" class="walk-card-display">Press Play to start listening to your flashcards hands-free.</p>
+      <p id="walk-progress" class="view-subtitle" style="margin:0 0 16px;">Card 0 / 0</p>
+      <div class="btn-row" style="justify-content:center; gap:10px;">
+        <button id="btn-walk-play" class="btn btn-primary" type="button">▶ Play Loop</button>
+        <button id="btn-walk-skip" class="btn btn-secondary" type="button">⏭ Next</button>
+        <button id="btn-walk-stop" class="btn btn-ghost" type="button">⏹ Stop</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- v5.0 Modal 4: Exam Panic Mode (Last-Night 10-Min Crammer) -->
+  <div id="exam-panic-modal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="panic-title">
+    <div class="modal-card" style="max-width:520px; width:calc(100% - 24px);">
+      <div class="btn-row" style="justify-content:space-between; margin-bottom:10px;">
+        <h3 id="panic-title" style="margin:0;">⚡ Exam Panic Mode</h3>
+        <div class="btn-row">
+          <span id="panic-timer" class="streak-pill">10:00</span>
+          <button id="btn-panic-close" class="btn btn-ghost btn-sm" type="button">Exit</button>
+        </div>
+      </div>
+      <p id="panic-counter" class="view-subtitle" style="margin:0 0 12px;">High-Yield Card 1 / 1</p>
+      <div id="panic-card-box" class="panic-card-box">
+        <p id="panic-front" class="panic-front"></p>
+        <p id="panic-back" class="panic-back" hidden></p>
+      </div>
+      <div class="btn-row" style="margin-top:14px; justify-content:space-between;">
+        <button id="btn-panic-reveal" class="btn btn-secondary" type="button" style="flex:1; justify-content:center;">Tap to Reveal</button>
+        <button id="btn-panic-again" class="btn btn-secondary" type="button" hidden style="flex:1; justify-content:center;">↻ Cram Again</button>
+        <button id="btn-panic-gotit" class="btn btn-primary" type="button" hidden style="flex:1; justify-content:center;">✓ Got It</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

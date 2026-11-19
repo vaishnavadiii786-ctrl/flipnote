@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flipnote-v2.0.0';
+const CACHE_NAME = 'flipnote-v5.1.2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -15,6 +15,9 @@ const APP_SHELL = [
   './js/supabase.js',
   './js/ai.js',
   './js/v2.js',
+  './js/v3.js',
+  './js/v4.js',
+  './js/v5.js',
   './js/app.js',
   './assets/icons/favicon.svg',
   './assets/icons/icon-192.png',

@@ -29,3 +29,7 @@ A free-first, offline-ready, Apple-inspired Progressive Web App (PWA) that conve
 2. Open **SQL Editor** and run `supabase/schema.sql`, then `supabase/policies.sql`.
 3. In **Project Settings → API**, copy your **Project URL** and **anon public** key (never use `service_role`).
 4. Paste them into FLIPNOTE **Settings → Optional Supabase Online Sharing** and click **Save**.
+
+## Support & Feedback
+
+Reach out anytime at **flipnote.app2006@gmail.com**.
