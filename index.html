@@ -228,6 +228,7 @@
                 <button id="btn-fc-next" class="btn btn-secondary" type="button" data-i18n="common.next">Next</button>
               </div>
               <div class="btn-row">
+                <button id="btn-fc-speak" class="btn btn-secondary btn-sm" type="button" aria-label="Read card aloud">🔊 Speak</button>
                 <button id="btn-fc-edit-card" class="btn btn-ghost btn-sm" type="button" data-i18n="common.edit">Edit</button>
                 <button id="btn-fc-delete-card" class="btn btn-danger btn-sm" type="button" data-i18n="common.delete">Delete</button>
               </div>
@@ -267,6 +268,13 @@
               </div>
             </div>
 
+            <div class="btn-row" style="margin:8px 0 12px; padding:10px 12px; border-radius:12px; background:var(--input-bg); border:1px solid var(--glass-border); justify-content:space-between;">
+              <div class="btn-row">
+                <label class="btn-row" style="font-size:0.84rem; cursor:pointer;"><input id="quiz-exam-mode" type="checkbox" /> <span>Exam Timer (60s/Q)</span></label>
+                <label class="btn-row" style="font-size:0.84rem; cursor:pointer;"><input id="quiz-neg-marking" type="checkbox" /> <span>-0.25 Negative Marking</span></label>
+              </div>
+              <span id="quiz-timer-pill" class="pill pill-warning" hidden>00:00</span>
+            </div>
             <p id="quiz-question-text" style="font-size:1.12rem; font-weight:600; margin:14px 0;"></p>
             <div id="quiz-options-list" class="quiz-options"></div>
 
@@ -286,6 +294,7 @@
             <div class="btn-row" style="justify-content:center; margin-top:16px;">
               <button id="btn-quiz-retry-wrong" class="btn btn-primary" type="button" hidden></button>
               <button id="btn-quiz-retry-all" class="btn btn-secondary" type="button" data-i18n="quiz.retryAll">Retry Full Quiz</button>
+              <button id="btn-quiz-download-card" class="btn btn-primary" type="button">Download Result Card (.png)</button>
             </div>
           </div>
         </article>
@@ -301,7 +310,7 @@
         <article class="glass-card">
           <div class="btn-row" style="justify-content:space-between; margin-bottom:12px;">
             <span id="rev-due-pill" class="pill">0</span>
-            <button id="btn-rev-practice-all" class="btn btn-secondary btn-sm" type="button" data-i18n="revision.practiceAll">Practice All Cards Anyway</button>
+            <div class="btn-row"><button id="btn-rev-speak" class="btn btn-secondary btn-sm" type="button">🔊 Speak</button><button id="btn-rev-practice-all" class="btn btn-secondary btn-sm" type="button" data-i18n="revision.practiceAll">Practice All Cards Anyway</button></div>
           </div>
 
           <div id="rev-empty" class="empty-state">
@@ -410,6 +419,28 @@
             <p class="stat-label" data-i18n="progress.cardsReviewed">Cards Reviewed</p>
           </div>
         </div>
+
+        <article class="glass-card">
+          <div class="btn-row" style="justify-content:space-between; margin-bottom:10px;">
+            <div>
+              <h3 style="margin:0; font-size:1.05rem;">Pomodoro Focus Timer &amp; Daily Streak</h3>
+              <p class="item-sub" style="margin:2px 0 0;">25m Focus / 5m Break — auto-logs study sessions locally</p>
+            </div>
+            <span id="stat-streak-pill" class="pill pill-success">🔥 0 Day Streak</span>
+          </div>
+          <div class="btn-row" style="justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div style="display:flex; align-items:baseline; gap:10px;">
+              <span id="pomodoro-display" class="stat-value" style="font-variant-numeric:tabular-nums;">25:00</span>
+              <span id="pomodoro-mode-label" class="pill">Focus</span>
+            </div>
+            <div class="btn-row">
+              <button id="btn-pomo-start" class="btn btn-primary btn-sm" type="button">Start</button>
+              <button id="btn-pomo-pause" class="btn btn-secondary btn-sm" type="button">Pause</button>
+              <button id="btn-pomo-reset" class="btn btn-ghost btn-sm" type="button">Reset</button>
+              <button id="btn-pomo-mode" class="btn btn-secondary btn-sm" type="button">Switch 25m / 5m</button>
+            </div>
+          </div>
+        </article>
 
         <article class="glass-card">
           <h3 style="margin:0 0 8px; font-size:1.05rem;" data-i18n="progress.dailyActivity">Last 7 Days Activity</h3>
