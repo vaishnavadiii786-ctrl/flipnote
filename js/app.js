@@ -41,6 +41,10 @@ import {
 import {
   scoreFeynmanRecall, buildPanicCramDeck, REEL_GRADIENTS
 } from './v5.js';
+import { logMistakes } from './v6.js';
+import { initV6ExamHub, refreshV6ExamHub, updateMistakeBadge } from './v6-ui.js';
+import { initV7Superpowers } from './v7-ui.js';
+import { initV8BrainHub, refreshV8BrainHub } from './v8-ui.js';
 import {
   isSupabaseReady, publishStudySetToSupabase, publishQuizToSupabase,
   fetchPublicStudySets, fetchSharedByShortCode, registerAppUserToSupabase
@@ -126,6 +130,39 @@ async function bootstrap() {
   initWelcomeGate();
   initV4Features();
   initV5PowerModes();
+  initV6ExamHub({
+    onOpenRetest: (questions, title) => {
+      state.activeQuiz = {
+        id: null,
+        title: title || 'Mistake Notebook Re-Test',
+        subject: 'Mistake Review',
+        language: 'en',
+        questions
+      };
+      startQuizRun(questions);
+      switchView('quiz');
+    },
+    onDataImported: async () => {
+      await renderSavedNotesList();
+      await renderLibrary();
+    },
+    onLogSession: async (kind, count) => {
+      await logStudySession(kind, count);
+    }
+  });
+  initV7Superpowers({
+    onOpenExamHubTab: (tab) => {
+      switchView('examhub');
+      refreshV6ExamHub(tab);
+    }
+  });
+  initV8BrainHub({
+    onDataImported: async () => {
+      await renderSavedNotesList();
+      await renderLibrary();
+    },
+    getUserName: () => state.settings.userName || 'You'
+  });
 }
 
 function applyTheme(theme) {
@@ -185,6 +222,8 @@ function switchView(viewName) {
   if (viewName === 'library') renderLibrary();
   if (viewName === 'revision') renderRevision();
   if (viewName === 'progress') renderProgress();
+  if (viewName === 'examhub') refreshV6ExamHub();
+  if (viewName === 'brain') refreshV8BrainHub();
 }
 
 async function refreshAllViews() {
@@ -900,6 +939,13 @@ async function advanceQuiz() {
       total: state.quizOrder.length,
       missedQuestions: state.quizMissed
     });
+    if (state.quizMissed.length) {
+      logMistakes(state.quizMissed, {
+        subject: state.activeQuiz.subject || 'General',
+        source: state.activeQuiz.title || 'Quiz Engine'
+      });
+      updateMistakeBadge();
+    }
     await logStudySession('quiz', state.quizOrder.length);
   }
   renderQuizView();

@@ -165,7 +165,7 @@ export function downloadQuizResultCard({ title, score, total, netScore, percent,
   // Footer
   ctx.fillStyle = '#94a3b8';
   ctx.font = '500 24px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-  ctx.fillText('Your Notes. Your Memory.', 540, 865);
+  ctx.fillText('IG: @flipnote.app  •  YT: @flipnoteapp', 540, 865);
   ctx.fillStyle = '#a5b4fc';
   ctx.font = '600 24px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
   ctx.fillText('vaishnavadiii786-ctrl.github.io/flipnote', 540, 912);

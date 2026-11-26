@@ -1,7 +1,8 @@
-const CACHE_NAME = 'flipnote-v5.1.2';
+const CACHE_NAME = 'flipnote-v8.1.0';
 const APP_SHELL = [
   './',
   './index.html',
+  './admin.html',
   './manifest.json',
   './css/style.css',
   './js/utils.js',
@@ -18,6 +19,18 @@ const APP_SHELL = [
   './js/v3.js',
   './js/v4.js',
   './js/v5.js',
+  './js/v6.js',
+  './js/v6-ui.js',
+  './js/v7.js',
+  './js/v7-ui.js',
+  './js/v71.js',
+  './js/v71-ui.js',
+  './js/v72.js',
+  './js/v72-ui.js',
+  './js/v8.js',
+  './js/v8-ui.js',
+  './js/v81-live.js',
+  './js/admin.js',
   './js/app.js',
   './assets/icons/favicon.svg',
   './assets/icons/icon-192.png',

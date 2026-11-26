@@ -79,6 +79,24 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           <span data-i18n="nav.quiz">Quiz</span>
         </button>
+        <button class="nav-item" data-view="examhub" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          <span>Exam Hub</span>
+          <span class="v6-nav-pill">v7.2</span>
+        </button>
+        <button class="nav-item" data-view="brain" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
+          <span>Brain &amp; AI</span>
+          <span class="v6-nav-pill">v8</span>
+        </button>
+    <button class="nav-item" data-view="livehub" type="button">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49"/></svg>
+      <span>Live</span>
+    </button>
+        <button class="nav-item" data-view="livehub" type="button">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
+          <span>Live Hub</span>
+        </button>
         <button class="nav-item" data-view="revision" type="button">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           <span data-i18n="nav.revision">Revision</span>
@@ -121,6 +139,9 @@
           </button>
         </div>
       </header>
+
+      <!-- v8.1 Live Notice Banner (Admin CMS) -->
+      <div id="v81-notice-banner" class="v81-notice-banner" hidden></div>
 
       <!-- VIEW 1: SMART NOTES -->
       <section id="view-notes" class="view-section active" aria-labelledby="notes-heading">
@@ -557,6 +578,7 @@
             <div>
               <h3 style="margin:0 0 4px; font-size:1.05rem;">Support &amp; Feedback</h3>
               <p class="view-subtitle" style="margin:0;">Questions, bug reports, or feature ideas: <a href="mailto:flipnote.app2006@gmail.com" style="color:var(--accent); text-decoration:none; font-weight:500;">flipnote.app2006@gmail.com</a></p>
+              <p class="view-subtitle" style="margin:6px 0 0;">Follow us: <a href="https://instagram.com/flipnote.app" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none; font-weight:600;">Instagram @flipnote.app</a> &bull; <a href="https://youtube.com/@flipnoteapp" target="_blank" rel="noopener" style="color:var(--success); text-decoration:none; font-weight:600;">YouTube @flipnoteapp</a></p>
             </div>
             <a class="btn btn-secondary btn-sm" href="mailto:flipnote.app2006@gmail.com?subject=FLIPNOTE%20Feedback" style="text-decoration:none;">Email Support</a>
           </div>
@@ -627,7 +649,10 @@
               <input id="setting-sb-key" class="input" type="text" autocomplete="off" placeholder="eyJ..." />
             </div>
           </div>
-          <button id="btn-save-settings" class="btn btn-primary" type="button" data-i18n="common.save">Save</button>
+          <div class="btn-row" style="margin-top:4px;">
+            <button id="btn-save-settings" class="btn btn-primary" type="button" data-i18n="common.save">Save</button>
+            <a href="./admin.html" class="btn btn-secondary">PW Live Admin Panel ↗</a>
+          </div>
         </article>
 
         <article class="glass-card">
@@ -641,7 +666,145 @@
             <button id="btn-delete-all" class="btn btn-danger" type="button" data-i18n="settings.deleteAll">Delete All Local Data</button>
           </div>
         </article>
+
+        <article class="glass-card" id="about-founder-card" style="border-color:rgba(52,211,153,0.35);">
+          <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px;">
+            <div style="width:54px; height:54px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.15rem; background:linear-gradient(135deg, rgba(16,185,129,0.28), rgba(52,211,153,0.12)); border:1px solid rgba(52,211,153,0.45); color:#6ee7b7; flex-shrink:0;">AKJ</div>
+            <div>
+              <span class="pill" style="font-size:0.7rem; margin-bottom:4px;">FOUNDER &amp; CEO</span>
+              <h3 style="margin:2px 0 0; font-size:1.12rem;">Aditya Kumar Jha <span class="item-sub" style="font-weight:500;">(Adiii)</span></h3>
+            </div>
+          </div>
+          <p class="item-sub" style="margin:0 0 12px; line-height:1.6;">
+            &ldquo;I built FLIPNOTE with one simple goal: no student should have to pay ₹2,000/month just to revise NCERT, practice mock tests, or clear a midnight doubt. FLIPNOTE is 100% free, zero-ads, and offline-first &mdash; built so every student gets premium Apple-grade study tools right in their pocket.&rdquo;
+          </p>
+          <div class="btn-row" style="flex-wrap:wrap; gap:8px;">
+            <a class="btn btn-secondary btn-sm" href="https://instagram.com/flipnote.app" target="_blank" rel="noopener noreferrer">Instagram @flipnote.app ↗</a>
+            <a class="btn btn-secondary btn-sm" href="https://youtube.com/@flipnoteapp" target="_blank" rel="noopener noreferrer">YouTube @flipnoteapp ↗</a>
+          </div>
+        </article>
       </section>
+
+      <!-- VIEW 8: v6.0 JEE & CLASS 10/12 BOARD EXAM HUB -->
+      <section id="view-examhub" class="view-section" aria-labelledby="examhub-heading">
+        <div class="view-header">
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <h2 id="examhub-heading" class="view-title" style="margin:0;">JEE &amp; Board Exam Hub</h2>
+            <span class="power-modes-badge">NEW v7.2</span>
+          </div>
+          <p class="view-subtitle">Formula Sheet, Auto Mistake Notebook, NTA JEE CBT Simulator, Board 3/5-Mark Checker, Syllabus Tracker &amp; Free Starter Packs.</p>
+        </div>
+
+        <nav id="v6-subnav" class="v6-subnav" aria-label="Exam Hub tools">
+          <button class="v6-tab-btn active" data-v6-tab="formulas" type="button">📐 Formula Sheet</button>
+          <button class="v6-tab-btn" data-v6-tab="mistakes" type="button">🎯 Mistake Book <span id="v6-mistake-badge" class="v6-count-badge" hidden></span></button>
+          <button class="v6-tab-btn" data-v6-tab="cbt" type="button">🖥️ JEE CBT Test</button>
+          <button class="v6-tab-btn" data-v6-tab="board" type="button">✍️ Board 3/5M Checker</button>
+          <button class="v6-tab-btn" data-v6-tab="syllabus" type="button">📅 Syllabus &amp; Countdown</button>
+          <button class="v6-tab-btn" data-v6-tab="packs" type="button">⚡ Starter Packs</button>
+          <button class="v6-tab-btn" data-v6-tab="blur" type="button">🫧 Blur-to-Recall</button>
+          <button class="v6-tab-btn" data-v6-tab="radar" type="button">📡 Speed Radar</button>
+          <button class="v6-tab-btn" data-v6-tab="battle" type="button">⚔️ 1v1 Battle</button>
+          <button class="v6-tab-btn" data-v6-tab="sleep" type="button">🌙 Sleep Loop</button>
+          <button class="v6-tab-btn" data-v6-tab="garden" type="button">🌱 Focus Garden</button>
+          <button class="v6-tab-btn" data-v6-tab="diagram" type="button">🖼️ Diagram Quiz</button>
+          <button class="v6-tab-btn" data-v6-tab="arcade" type="button">🎮 60s Arcade</button>
+          <button class="v6-tab-btn" data-v6-tab="percentile" type="button">📊 %ile Predictor</button>
+          <button class="v6-tab-btn" data-v6-tab="pdfs" type="button">📚 NCERT &amp; PDF Hub</button>
+        </nav>
+
+        <div id="v6-panel-formulas" class="v6-panel"></div>
+        <div id="v6-panel-mistakes" class="v6-panel" hidden></div>
+        <div id="v6-panel-cbt" class="v6-panel" hidden></div>
+        <div id="v6-panel-board" class="v6-panel" hidden></div>
+        <div id="v6-panel-syllabus" class="v6-panel" hidden></div>
+        <div id="v6-panel-packs" class="v6-panel" hidden></div>
+        <div id="v6-panel-blur" class="v6-panel" hidden></div>
+        <div id="v6-panel-radar" class="v6-panel" hidden></div>
+        <div id="v6-panel-battle" class="v6-panel" hidden></div>
+        <div id="v6-panel-sleep" class="v6-panel" hidden></div>
+        <div id="v6-panel-garden" class="v6-panel" hidden></div>
+        <div id="v6-panel-diagram" class="v6-panel" hidden></div>
+        <div id="v6-panel-arcade" class="v6-panel" hidden></div>
+        <div id="v6-panel-percentile" class="v6-panel" hidden></div>
+        <div id="v6-panel-pdfs" class="v6-panel" hidden></div>
+      </section>
+
+      <!-- VIEW 9: v8.0 BRAIN & AI UNIVERSE (13 NEW FEATURES) -->
+      <section id="view-brain" class="view-section" aria-labelledby="brain-heading">
+        <div class="view-header">
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <h2 id="brain-heading" class="view-title" style="margin:0;">FLIPNOTE Brain &amp; AI Universe</h2>
+            <span class="power-modes-badge">NEW v8.0</span>
+          </div>
+          <p class="view-subtitle">AI Smart Summary, AI Tutor, Study Streak, Global Leaderboard, Community Notes, FLIPNOTE Brain, Lectures to Notes, Solve with Steps, Study Planner, Visual Mode, Privacy Vault, Memory Palace &amp; Knowledge Universe.</p>
+        </div>
+
+        <nav id="v8-subnav" class="v6-subnav" aria-label="Brain and AI tools">
+          <button class="v6-tab-btn active" data-v8-tab="summary" type="button">✨ AI Summary</button>
+          <button class="v6-tab-btn" data-v8-tab="tutor" type="button">🤖 AI Tutor</button>
+          <button class="v6-tab-btn" data-v8-tab="streak" type="button">🔥 Study Streak</button>
+          <button class="v6-tab-btn" data-v8-tab="leaderboard" type="button">🏆 Leaderboard</button>
+          <button class="v6-tab-btn" data-v8-tab="community" type="button">🌍 Community Notes</button>
+          <button class="v6-tab-btn" data-v8-tab="brain" type="button">🧠 FLIPNOTE Brain</button>
+          <button class="v6-tab-btn" data-v8-tab="lectures" type="button">🎙️ Lectures to Notes</button>
+          <button class="v6-tab-btn" data-v8-tab="solver" type="button">🧮 Solve with Steps</button>
+          <button class="v6-tab-btn" data-v8-tab="planner" type="button">🗓️ Study Planner</button>
+          <button class="v6-tab-btn" data-v8-tab="visual" type="button">🎨 Visual Mode</button>
+          <button class="v6-tab-btn" data-v8-tab="vault" type="button">🔒 Privacy Vault</button>
+          <button class="v6-tab-btn" data-v8-tab="palace" type="button">🏛️ Memory Palace</button>
+          <button class="v6-tab-btn" data-v8-tab="universe" type="button">🌌 Knowledge Universe</button>
+        </nav>
+
+        <div id="v8-panel-summary" class="v8-panel"></div>
+        <div id="v8-panel-tutor" class="v8-panel" hidden></div>
+        <div id="v8-panel-streak" class="v8-panel" hidden></div>
+        <div id="v8-panel-leaderboard" class="v8-panel" hidden></div>
+        <div id="v8-panel-community" class="v8-panel" hidden></div>
+        <div id="v8-panel-brain" class="v8-panel" hidden></div>
+        <div id="v8-panel-lectures" class="v8-panel" hidden></div>
+        <div id="v8-panel-solver" class="v8-panel" hidden></div>
+        <div id="v8-panel-planner" class="v8-panel" hidden></div>
+        <div id="v8-panel-visual" class="v8-panel" hidden></div>
+        <div id="v8-panel-vault" class="v8-panel" hidden></div>
+        <div id="v8-panel-palace" class="v8-panel" hidden></div>
+        <div id="v8-panel-universe" class="v8-panel" hidden></div>
+      </section>
+
+      <!-- VIEW 10: v8.1 LIVE HUB (Lectures, NCERT PDFs, Topper Notes, Live Quizzes) -->
+      <section id="view-livehub" class="view-section" aria-labelledby="livehub-heading">
+        <div class="view-header">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h2 id="livehub-heading" class="view-title">Live Batch &amp; Study Hub <span class="pill" style="font-size:0.72rem;vertical-align:middle;">v8.1 LIVE</span></h2>
+              <p id="v81-live-sync-label" class="view-subtitle">Synced with FLIPNOTE Live CMS</p>
+            </div>
+            <button id="v81-btn-refresh-live" class="btn btn-secondary btn-sm" type="button">↻ Sync Now</button>
+          </div>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:14px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-secondary btn-sm active" data-v81-tab="lectures">🎥 Lectures</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-v81-tab="ncert">📘 NCERT PDFs</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-v81-tab="notes">📝 Topper Notes</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-v81-tab="quizzes">⚡ Live Quizzes</button>
+        </div>
+
+        <div class="grid-2" style="margin-bottom:14px;">
+          <input id="v81-live-search" class="input" type="search" placeholder="Search lectures, chapters, notes…" />
+          <select id="v81-live-subject" class="input">
+            <option value="all">All Subjects</option>
+            <option value="physics">Physics</option>
+            <option value="chemistry">Chemistry</option>
+            <option value="mathematics">Mathematics</option>
+            <option value="biology">Biology</option>
+            <option value="mixed">Mixed</option>
+          </select>
+        </div>
+
+        <div id="v81-live-list" class="grid-2"></div>
+      </section>
+
     </main>
   </div>
 
@@ -658,6 +821,14 @@
     <button class="nav-item" data-view="quiz" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       <span data-i18n="nav.quiz">Quiz</span>
+    </button>
+    <button class="nav-item" data-view="examhub" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      <span>Exam Hub</span>
+    </button>
+    <button class="nav-item" data-view="brain" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
+      <span>Brain AI</span>
     </button>
     <button class="nav-item" data-view="revision" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
@@ -907,5 +1078,17 @@
     </div>
   </div>
 
+
+  <!-- v8.1 Live Content Modal (Lectures, Topper Notes, Live Quizzes) -->
+  <div id="v81-content-modal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="v81-modal-title">
+    <div class="modal-card" style="max-width:680px; width:calc(100% - 24px);">
+      <div class="btn-row" style="justify-content:space-between; margin-bottom:12px;">
+        <h3 id="v81-modal-title" style="margin:0;">Live Content</h3>
+        <button id="v81-modal-close" class="btn btn-ghost btn-sm" type="button">Close</button>
+      </div>
+      <div id="v81-modal-body"></div>
+    </div>
+  </div>
+  <script type="module" src="./js/v81-live.js"></script>
 </body>
 </html>
