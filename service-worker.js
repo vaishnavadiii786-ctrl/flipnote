@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flipnote-v8.1.0';
+const CACHE_NAME = 'flipnote-v8.1.1';
 const APP_SHELL = [
   './',
   './index.html',
@@ -30,6 +30,7 @@ const APP_SHELL = [
   './js/v8.js',
   './js/v8-ui.js',
   './js/v81-live.js',
+  './js/v81-motion.js',
   './js/admin.js',
   './js/app.js',
   './assets/icons/favicon.svg',

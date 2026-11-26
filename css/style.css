@@ -2762,3 +2762,174 @@ h1, h2, h3, .view-title, .brand-title {
   border: 1px solid rgba(52, 211, 153, 0.36);
   box-shadow: 0 22px 54px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(110, 231, 183, 0.22);
 }
+
+/* ==========================================================================
+   FLIPNOTE v8.1 — Enterprise Motion & Interior Apple-Glass Redesign
+   ========================================================================== */
+
+#v81-aurora-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+#v81-aurora-bg .v81-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(85px);
+  opacity: 0.34;
+  will-change: transform;
+}
+#v81-aurora-bg .orb-1 {
+  width: 520px; height: 520px;
+  top: -140px; left: -100px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.42), transparent 70%);
+  animation: v81Float1 18s ease-in-out infinite alternate;
+}
+#v81-aurora-bg .orb-2 {
+  width: 460px; height: 460px;
+  top: 28%; right: -120px;
+  background: radial-gradient(circle, rgba(52, 211, 153, 0.28), transparent 70%);
+  animation: v81Float2 22s ease-in-out infinite alternate;
+}
+#v81-aurora-bg .orb-3 {
+  width: 560px; height: 560px;
+  bottom: -180px; left: 26%;
+  background: radial-gradient(circle, rgba(6, 95, 70, 0.36), transparent 70%);
+  animation: v81Float3 25s ease-in-out infinite alternate;
+}
+[data-theme="light"] #v81-aurora-bg .v81-orb { opacity: 0.22; }
+
+@keyframes v81Float1 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(85px, 65px, 0) scale(1.12); }
+}
+@keyframes v81Float2 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(-75px, 90px, 0) scale(0.92); }
+}
+@keyframes v81Float3 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(60px, -70px, 0) scale(1.08); }
+}
+
+.app-shell { position: relative; z-index: 1; }
+
+/* Interactive Pointer Spotlight + Elevated Interior Glass Cards */
+.glass-card, .qc-tile, .v6-card, .v81-item-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.28s var(--ease-spring), border-color 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
+}
+.glass-card::before, .qc-tile::before, .v81-item-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+    340px circle at var(--mx, 50%) var(--my, 0%),
+    rgba(52, 211, 153, 0.14),
+    transparent 62%
+  );
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  z-index: 0;
+}
+.glass-card:hover::before, .qc-tile:hover::before, .v81-item-card:hover::before {
+  opacity: 1;
+}
+.glass-card > *, .qc-tile > *, .v81-item-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.glass-card:hover, .v81-item-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(52, 211, 153, 0.34);
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.56), inset 0 1px 0 rgba(110, 231, 183, 0.18);
+}
+
+/* Bento Quick-Capture Tiles Interior Polish */
+.qc-tile {
+  border: 1px solid rgba(52, 211, 153, 0.20) !important;
+  background: linear-gradient(160deg, rgba(16, 32, 30, 0.78), rgba(10, 18, 20, 0.88)) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+}
+[data-theme="light"] .qc-tile {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(235, 248, 242, 0.88)) !important;
+}
+.qc-tile:hover {
+  transform: translateY(-3px) scale(1.02);
+  border-color: rgba(52, 211, 153, 0.52) !important;
+}
+.qc-tile:active { transform: scale(0.96); }
+
+/* Primary Button Shimmer Sweep & Tactile Spring */
+.btn {
+  transition: transform 0.2s var(--ease-spring), filter 0.2s ease, box-shadow 0.25s ease, border-color 0.2s ease;
+}
+.btn:active { transform: scale(0.96); }
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: #03140e !important;
+  font-weight: 800 !important;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  top: -50%; left: -75%;
+  width: 45%; height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: rotate(24deg);
+  animation: v81BtnShimmer 4.8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes v81BtnShimmer {
+  0%, 72% { left: -75%; }
+  100% { left: 135%; }
+}
+
+/* Sidebar & Floating Mobile Dock Redesign */
+.sidebar .nav-item {
+  transition: transform 0.2s var(--ease-spring), background 0.2s ease, color 0.2s ease;
+}
+.sidebar .nav-item:hover { transform: translateX(4px); }
+.sidebar .nav-item.active {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.24), rgba(16, 185, 129, 0.08)) !important;
+  border: 1px solid rgba(52, 211, 153, 0.38) !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.18);
+}
+
+@media (max-width: 900px) {
+  .mobile-tabbar, .bottom-nav {
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border-top: 1px solid rgba(52, 211, 153, 0.24) !important;
+  }
+}
+
+/* Staggered View & Card Entrance Choreography */
+@keyframes v81StaggerIn {
+  0% { opacity: 0; transform: translate3d(0, 16px, 0) scale(0.985); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+.v81-stagger-in {
+  animation: v81StaggerIn 0.48s var(--ease-spring) both;
+  animation-delay: var(--stagger-delay, 0ms);
+}
+
+/* Notice Banner Smooth Entrance */
+.v81-notice-banner:not([hidden]) {
+  animation: v81StaggerIn 0.42s var(--ease-spring) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #v81-aurora-bg .v81-orb, .btn-primary::after, .v81-stagger-in {
+    animation: none !important;
+  }
+}
