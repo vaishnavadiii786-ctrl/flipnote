@@ -233,19 +233,58 @@ export function computeStreakMetrics(data, nowMs = Date.now()) {
 }
 
 // ============================================================================
-// 4. GLOBAL LEADERBOARD (LEAGUE TIERS + USER RANK)
+// 4. GLOBAL LEADERBOARD (100% REAL SUPABASE STUDENTS + LEAGUE TIERS)
 // ============================================================================
 
-const GLOBAL_BENCHMARKS = [
-  { name: 'Aarav Sharma', exam: 'JEE Main', xp: 4850, streak: 42 },
-  { name: 'Diya Patel', exam: 'Class 12 Boards', xp: 4120, streak: 36 },
-  { name: 'Rohan Verma', exam: 'JEE Main', xp: 3490, streak: 29 },
-  { name: 'Ananya Iyer', exam: 'Class 10 Boards', xp: 2840, streak: 24 },
-  { name: 'Kabir Mehta', exam: 'JEE Main', xp: 2150, streak: 19 },
-  { name: 'Sneha Nair', exam: 'Class 12 Boards', xp: 1480, streak: 14 },
-  { name: 'Vivaan Gupta', exam: 'Class 10 Boards', xp: 890, streak: 9 },
-  { name: 'Priya Singh', exam: 'JEE Main', xp: 420, streak: 5 }
-];
+export const LEADERBOARD_CACHE_KEY = 'flipnote_real_leaderboard_v81';
+const DEFAULT_SB_URL = 'https://xffnacbkcmvhaugohxzx.supabase.co';
+const DEFAULT_SB_KEY = 'sb_publishable_49W8RpssYsWSwPNQq1ndFQ_gzGZv38D';
+
+function getLeaderboardSbConfig() {
+  let url = DEFAULT_SB_URL;
+  let key = DEFAULT_SB_KEY;
+  try {
+    const raw = localStorage.getItem('flipnote_settings');
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s.supabaseUrl) url = s.supabaseUrl.trim().replace(/\/+$/, '');
+      if (s.supabaseAnonKey) key = s.supabaseAnonKey.trim();
+    }
+  } catch (_) {}
+  return { url, key };
+}
+
+export function getOrCreateStudentKey() {
+  try {
+    const profRaw = localStorage.getItem('flipnote_user_profile');
+    if (profRaw) {
+      const p = JSON.parse(profRaw);
+      if (p.email) return 'email_' + btoa(unescape(encodeURIComponent(p.email.trim().toLowerCase()))).replace(/[^a-zA-Z0-9]/g, '').slice(0, 48);
+    }
+    let devId = localStorage.getItem('flipnote_device_lb_key');
+    if (!devId) {
+      devId = 'dev_' + (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2));
+      localStorage.setItem('flipnote_device_lb_key', devId);
+    }
+    return devId;
+  } catch (_) {
+    return 'dev_local_student';
+  }
+}
+
+export function getSavedExamTag() {
+  try {
+    return localStorage.getItem('flipnote_student_exam_tag') || 'JEE / NEET';
+  } catch (_) {
+    return 'JEE / NEET';
+  }
+}
+
+export function setSavedExamTag(tag) {
+  try {
+    localStorage.setItem('flipnote_student_exam_tag', tag || 'JEE / NEET');
+  } catch (_) {}
+}
 
 export function getLeagueTier(xp = 0) {
   if (xp >= 3500) return { name: 'Grandmaster League', badge: '👑', color: '#fbbf24' };
@@ -255,14 +294,94 @@ export function getLeagueTier(xp = 0) {
   return { name: 'Bronze League', badge: '🥉', color: '#fb923c' };
 }
 
-export function buildGlobalLeaderboard(userName = 'You', userXp = 120, userStreak = 1) {
-  const rows = [
-    ...GLOBAL_BENCHMARKS.map((b) => ({ ...b, isUser: false })),
-    { name: userName || 'You', exam: 'Your Profile', xp: Number(userXp) || 0, streak: Number(userStreak) || 0, isUser: true }
-  ].sort((a, b) => b.xp - a.xp);
+export async function syncAndFetchRealLeaderboard(userName = 'You', userXp = 0, userStreak = 0) {
+  const { url, key } = getLeaderboardSbConfig();
+  const headers = { 'Content-Type': 'application/json', 'apikey': key };
+  if (key.startsWith('eyJ')) headers['Authorization'] = `Bearer ${key}`;
 
+  const studentKey = getOrCreateStudentKey();
+  const cleanName = (userName && userName !== 'You' ? userName : 'Student').trim().slice(0, 80);
+  const examTag = getSavedExamTag();
+
+  if (navigator.onLine && cleanName.length >= 2) {
+    try {
+      await fetch(`${url}/rest/v1/rpc/upsert_student_leaderboard`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          p_student_key: studentKey,
+          p_full_name: cleanName,
+          p_exam: examTag,
+          p_xp: Number(userXp) || 0,
+          p_streak: Number(userStreak) || 0
+        })
+      });
+    } catch (_) {}
+  }
+
+  let realRows = [];
+  if (navigator.onLine) {
+    try {
+      const res = await fetch(`${url}/rest/v1/student_leaderboard?select=id,student_key,full_name,exam,xp,streak,updated_at&order=xp.desc,streak.desc&limit=50`, { headers });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          realRows = data.map((r) => ({
+            name: r.full_name,
+            exam: r.exam || 'Student',
+            xp: Number(r.xp) || 0,
+            streak: Number(r.streak) || 0,
+            isUser: r.student_key === studentKey
+          }));
+          localStorage.setItem(LEADERBOARD_CACHE_KEY, JSON.stringify(realRows));
+        }
+      }
+    } catch (_) {}
+  }
+
+  if (!realRows.length) {
+    try {
+      const cached = localStorage.getItem(LEADERBOARD_CACHE_KEY);
+      if (cached) realRows = JSON.parse(cached);
+    } catch (_) {}
+  }
+
+  if (!realRows.some((r) => r.isUser)) {
+    realRows.push({
+      name: cleanName,
+      exam: examTag,
+      xp: Number(userXp) || 0,
+      streak: Number(userStreak) || 0,
+      isUser: true
+    });
+  }
+
+  realRows.sort((a, b) => b.xp - a.xp || b.streak - a.streak);
+  const ranked = realRows.map((r, idx) => ({ ...r, rank: idx + 1, league: getLeagueTier(r.xp) }));
+  const userRow = ranked.find((r) => r.isUser) || ranked[0];
+  return { ranked, userRow };
+}
+
+export function buildGlobalLeaderboard(userName = 'You', userXp = 120, userStreak = 1) {
+  let cached = [];
+  try {
+    const raw = localStorage.getItem(LEADERBOARD_CACHE_KEY);
+    if (raw) cached = JSON.parse(raw);
+  } catch (_) {}
+  const cleanName = (userName && userName !== 'You' ? userName : 'Student').trim();
+  const rows = cached.length ? cached.map((r) => ({ ...r })) : [{
+    name: cleanName,
+    exam: getSavedExamTag(),
+    xp: Number(userXp) || 0,
+    streak: Number(userStreak) || 0,
+    isUser: true
+  }];
+  if (!rows.some((r) => r.isUser)) {
+    rows.push({ name: cleanName, exam: getSavedExamTag(), xp: Number(userXp) || 0, streak: Number(userStreak) || 0, isUser: true });
+  }
+  rows.sort((a, b) => b.xp - a.xp || b.streak - a.streak);
   const ranked = rows.map((r, idx) => ({ ...r, rank: idx + 1, league: getLeagueTier(r.xp) }));
-  const userRow = ranked.find((r) => r.isUser);
+  const userRow = ranked.find((r) => r.isUser) || ranked[0];
   return { ranked, userRow };
 }
 

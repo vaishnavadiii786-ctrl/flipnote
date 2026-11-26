@@ -12,6 +12,9 @@ import {
   useStreakFreeze,
   computeStreakMetrics,
   buildGlobalLeaderboard,
+  syncAndFetchRealLeaderboard,
+  getSavedExamTag,
+  setSavedExamTag,
   loadCommunityNotes,
   upvoteCommunityNote,
   publishCommunityNote,
@@ -282,45 +285,81 @@ function renderStreakPanel() {
 // ============================================================================
 // 4. GLOBAL LEADERBOARD
 // ============================================================================
+function renderLeaderboardRowsHtml(ranked) {
+  return ranked
+    .map(
+      (r) => `
+    <div class="v72-pdf-row ${r.isUser ? 'v8-lb-me' : ''}">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <strong style="min-width:34px; color:var(--accent);">#${r.rank}</strong>
+        <div>
+          <strong>${escapeHtml(r.name)} ${r.isUser ? '(You)' : ''}</strong>
+          <span class="item-sub" style="margin-left:6px;">${escapeHtml(r.exam)} • 🔥 ${r.streak}d</span>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="v6-mini-tag">${r.league.badge} ${escapeHtml(r.league.name)}</span>
+        <strong>${r.xp} XP</strong>
+      </div>
+    </div>`
+    )
+    .join('');
+}
+
 function renderLeaderboardPanel() {
   const el = document.getElementById('v8-panel-leaderboard');
   if (!el) return;
   const s = computeStreakMetrics(loadStreakData());
   const userName = v8Callbacks.getUserName ? v8Callbacks.getUserName() : 'You';
   const { ranked, userRow } = buildGlobalLeaderboard(userName, s.xp, s.currentStreak);
+  const currentExam = getSavedExamTag();
 
   el.innerHTML = `
     <div class="glass-card v6-card">
-      <div class="v6-toolbar">
+      <div class="v6-toolbar" style="flex-wrap:wrap; gap:10px;">
         <div>
-          <span class="v6-mini-tag">COMPETITIVE LEAGUES</span>
+          <span class="v6-mini-tag">LIVE REAL STUDENTS</span>
           <h3 class="section-heading" style="margin:6px 0 0;">Global Student Leaderboard</h3>
-          <p class="item-sub" style="margin:4px 0 0;">Your Rank: <strong>#${userRow.rank}</strong> • ${userRow.league.badge} ${escapeHtml(userRow.league.name)} (${userRow.xp} XP)</p>
+          <p id="v8-lb-summary" class="item-sub" style="margin:4px 0 0;">Your Rank: <strong>#${userRow.rank}</strong> • ${userRow.league.badge} ${escapeHtml(userRow.league.name)} (${userRow.xp} XP)</p>
+        </div>
+        <div class="btn-row" style="gap:8px;">
+          <select id="v8-lb-exam-select" class="input" style="width:auto; padding:6px 10px; font-size:0.82rem;">
+            <option value="JEE / NEET">JEE / NEET</option>
+            <option value="JEE Main">JEE Main</option>
+            <option value="NEET UG">NEET UG</option>
+            <option value="Class 12 Boards">Class 12 Boards</option>
+            <option value="Class 10 Boards">Class 10 Boards</option>
+            <option value="UPSC / Other">UPSC / Other</option>
+          </select>
+          <button id="v8-lb-refresh" class="btn btn-secondary btn-sm" type="button">↻ Sync Live</button>
         </div>
       </div>
 
-      <div class="v72-chapter-grid">
-        ${ranked
-          .map(
-            (r) => `
-          <div class="v72-pdf-row ${r.isUser ? 'v8-lb-me' : ''}">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <strong style="min-width:34px; color:var(--accent);">#${r.rank}</strong>
-              <div>
-                <strong>${escapeHtml(r.name)} ${r.isUser ? '(You)' : ''}</strong>
-                <span class="item-sub" style="margin-left:6px;">${escapeHtml(r.exam)} • 🔥 ${r.streak}d</span>
-              </div>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="v6-mini-tag">${r.league.badge} ${escapeHtml(r.league.name)}</span>
-              <strong>${r.xp} XP</strong>
-            </div>
-          </div>`
-          )
-          .join('')}
+      <div id="v8-lb-grid" class="v72-chapter-grid">
+        ${renderLeaderboardRowsHtml(ranked)}
       </div>
     </div>
   `;
+
+  const sel = document.getElementById('v8-lb-exam-select');
+  if (sel) {
+    sel.value = currentExam;
+    sel.addEventListener('change', () => {
+      setSavedExamTag(sel.value);
+      doLiveSync();
+    });
+  }
+
+  const doLiveSync = async () => {
+    const grid = document.getElementById('v8-lb-grid');
+    const sum = document.getElementById('v8-lb-summary');
+    const live = await syncAndFetchRealLeaderboard(userName, s.xp, s.currentStreak);
+    if (grid) grid.innerHTML = renderLeaderboardRowsHtml(live.ranked);
+    if (sum) sum.innerHTML = `Your Rank: <strong>#${live.userRow.rank}</strong> • ${live.userRow.league.badge} ${escapeHtml(live.userRow.league.name)} (${live.userRow.xp} XP) • <span>${live.ranked.length} real students</span>`;
+  };
+
+  document.getElementById('v8-lb-refresh')?.addEventListener('click', doLiveSync);
+  doLiveSync();
 }
 
 // ============================================================================
